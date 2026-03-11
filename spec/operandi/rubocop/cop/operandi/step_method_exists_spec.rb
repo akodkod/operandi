@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Operandi::StepMethodExists, :config do
       expect_offense(<<~RUBY)
         class MyService < ApplicationService
           step :validate
-          ^^^^^^^^^^^^^^ Operandi/StepMethodExists: Step `validate` has no corresponding method. For inherited steps, disable this line or add to ExcludedSteps.
+          ^^^^^^^^^^^^^^ Operandi/StepMethodExists: Step `validate` has no corresponding method. For inherited steps, use `parent: true`, disable this line, or add to ExcludedSteps.
         end
       RUBY
     end
@@ -23,9 +23,9 @@ RSpec.describe RuboCop::Cop::Operandi::StepMethodExists, :config do
       expect_offense(<<~RUBY)
         class MyService < ApplicationService
           step :validate
-          ^^^^^^^^^^^^^^ Operandi/StepMethodExists: Step `validate` has no corresponding method. For inherited steps, disable this line or add to ExcludedSteps.
+          ^^^^^^^^^^^^^^ Operandi/StepMethodExists: Step `validate` has no corresponding method. For inherited steps, use `parent: true`, disable this line, or add to ExcludedSteps.
           step :process
-          ^^^^^^^^^^^^^ Operandi/StepMethodExists: Step `process` has no corresponding method. For inherited steps, disable this line or add to ExcludedSteps.
+          ^^^^^^^^^^^^^ Operandi/StepMethodExists: Step `process` has no corresponding method. For inherited steps, use `parent: true`, disable this line, or add to ExcludedSteps.
         end
       RUBY
     end
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Operandi::StepMethodExists, :config do
         class MyService < ApplicationService
           step :validate
           step :process
-          ^^^^^^^^^^^^^ Operandi/StepMethodExists: Step `process` has no corresponding method. For inherited steps, disable this line or add to ExcludedSteps.
+          ^^^^^^^^^^^^^ Operandi/StepMethodExists: Step `process` has no corresponding method. For inherited steps, use `parent: true`, disable this line, or add to ExcludedSteps.
 
           private
 
@@ -204,6 +204,44 @@ RSpec.describe RuboCop::Cop::Operandi::StepMethodExists, :config do
     end
   end
 
+  context "with parent option" do
+    it "does not register an offense for step with parent: true" do
+      expect_no_offenses(<<~RUBY)
+        class User::Create < CreateService
+          step :initialize_entity, parent: true
+        end
+      RUBY
+    end
+
+    it "only flags regular steps when mixed with parent steps" do
+      expect_offense(<<~RUBY)
+        class User::Create < CreateService
+          step :initialize_entity, parent: true
+          step :send_welcome_email
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Operandi/StepMethodExists: Step `send_welcome_email` has no corresponding method. For inherited steps, use `parent: true`, disable this line, or add to ExcludedSteps.
+        end
+      RUBY
+    end
+
+    it "does not register an offense for parent: true combined with other options" do
+      expect_no_offenses(<<~RUBY)
+        class User::Create < CreateService
+          step :initialize_entity, if: :should_init?, parent: true
+          step :cleanup, always: true, parent: true
+        end
+      RUBY
+    end
+
+    it "still flags missing method when parent: false" do
+      expect_offense(<<~RUBY)
+        class User::Create < CreateService
+          step :initialize_entity, parent: false
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Operandi/StepMethodExists: Step `initialize_entity` has no corresponding method. For inherited steps, use `parent: true`, disable this line, or add to ExcludedSteps.
+        end
+      RUBY
+    end
+  end
+
   context "with ExcludedSteps option" do
     let(:config) do
       RuboCop::Config.new(
@@ -229,7 +267,7 @@ RSpec.describe RuboCop::Cop::Operandi::StepMethodExists, :config do
           step :initialize_entity
           step :assign_attributes
           step :send_welcome_email
-          ^^^^^^^^^^^^^^^^^^^^^^^^ Step `send_welcome_email` has no corresponding method. For inherited steps, disable this line or add to ExcludedSteps.
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Step `send_welcome_email` has no corresponding method. For inherited steps, use `parent: true`, disable this line, or add to ExcludedSteps.
         end
       RUBY
     end
