@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- Allow to specify `parent: true` for `step` to skip `StepMethodExists` Rubocop cop
+
 ### Breaking changes
 
 - Rename gem from `light-services to `operandi`
