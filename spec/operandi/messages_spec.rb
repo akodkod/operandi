@@ -187,7 +187,7 @@ RSpec.describe Operandi::Messages do
     let(:config) { { break_on_add: false, raise_on_add: true, rollback_on_add: false } }
 
     it "raises error when adding message" do
-      expect { messages.add(:base, "error text") }.to raise_error(Operandi::Error, "Base error text")
+      expect { messages.add(:base, "error text") }.to raise_error(Operandi::Error, "Error text")
     end
   end
 end

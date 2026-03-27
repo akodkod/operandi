@@ -36,7 +36,17 @@ module Operandi
     #   Check if a key has messages.
     #   @param key [Symbol] the key to check
     #   @return [Boolean] true if key has messages
-    def_delegators :@messages, :[], :any?, :empty?, :size, :keys, :values, :each, :each_with_index, :each_with_object, :key?
+    def_delegators :@messages,
+                   :[],
+                   :any?,
+                   :empty?,
+                   :size,
+                   :keys,
+                   :values,
+                   :each,
+                   :each_with_index,
+                   :each_with_object,
+                   :key?
     alias has_key? key?
 
     # Initialize a new messages collection.
@@ -152,7 +162,11 @@ module Operandi
     def raise!(message)
       return unless @config[:raise_on_add]
 
-      raise Operandi::Error, "#{message.key.to_s.capitalize} #{message}"
+      if message.key == :base
+        raise Operandi::Error, message.text.capitalize.strip
+      else
+        raise Operandi::Error, "#{message.key.to_s.capitalize} #{message.text}".strip
+      end
     end
 
     def rollback!(rollback)
