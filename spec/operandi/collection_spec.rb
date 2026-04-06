@@ -210,6 +210,18 @@ RSpec.describe Operandi::Collection::Arguments do
       end
     end
   end
+
+  describe "#arg alias" do
+    let(:service) { WithConditions.run }
+
+    it "is an alias for #arguments" do
+      expect(service.arg).to be(service.arguments)
+    end
+
+    it "allows accessing argument values" do
+      expect(service.arg[:add_c]).to be(false)
+    end
+  end
 end
 
 RSpec.describe Operandi::Collection::Outputs do
@@ -232,6 +244,18 @@ RSpec.describe Operandi::Collection::Outputs do
 
     it "provides boolean check" do
       expect(service.word?).to be(true)
+    end
+  end
+
+  describe "#output alias" do
+    let(:service) { WithConditions.run }
+
+    it "is an alias for #outputs" do
+      expect(service.output).to be(service.outputs)
+    end
+
+    it "allows accessing output values" do
+      expect(service.output[:word]).to eq("ab")
     end
   end
 end

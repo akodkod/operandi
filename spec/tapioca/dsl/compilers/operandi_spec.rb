@@ -333,7 +333,7 @@ RSpec.describe Tapioca::Dsl::Compilers::Operandi do
           end
 
           arg :input, type: String
-          output :output, type: Integer
+          output :result, type: Integer
         end
       end
 
@@ -341,7 +341,7 @@ RSpec.describe Tapioca::Dsl::Compilers::Operandi do
         scope = compiler.decorate
 
         expect(find_method(scope, "input")).not_to be_nil
-        expect(find_method(scope, "output")).not_to be_nil
+        expect(find_method(scope, "result")).not_to be_nil
       end
 
       it "generates 11 methods total (3 per field + 3 class methods + 2 collection accessors)" do

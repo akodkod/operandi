@@ -24,6 +24,8 @@ module Operandi
     BASE_METHODS = [
       :outputs,
       :arguments,
+      :arg,
+      :output,
       :errors,
       :warnings,
       :success?,

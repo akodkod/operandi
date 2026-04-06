@@ -57,6 +57,9 @@ module Operandi
     # @return [Collection::Base] collection of argument values
     attr_reader :arguments
 
+    alias arg arguments
+    alias output outputs
+
     # @return [Messages] collection of error messages
     attr_reader :errors
 
