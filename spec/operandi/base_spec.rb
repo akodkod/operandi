@@ -397,7 +397,7 @@ RSpec.describe Operandi::Base do
     end
 
     it "provides access via outputs collection" do
-      expect(service.outputs[:word]).to eq("ab")
+      expect(service.output[:word]).to eq("ab")
     end
 
     it "provides boolean check method" do
@@ -414,8 +414,8 @@ RSpec.describe Operandi::Base do
       expect(service.current_user).to eq(user)
     end
 
-    it "provides access via arguments collection" do
-      expect(service.arguments[:current_user]).to eq(user)
+    it "provides access via arg collection" do
+      expect(service.arg[:current_user]).to eq(user)
     end
 
     it "provides boolean check method" do
@@ -423,8 +423,8 @@ RSpec.describe Operandi::Base do
     end
 
     it "allows setting via collection" do
-      service.arguments[:quantity] = 10
-      expect(service.arguments[:quantity]).to eq(10)
+      service.arg[:quantity] = 10
+      expect(service.arg[:quantity]).to eq(10)
     end
   end
 
@@ -435,7 +435,7 @@ RSpec.describe Operandi::Base do
     it "evaluates Proc defaults in instance context" do
       service = Product::AddToCart.run(current_user: user, product: product)
       # test_default has default: -> { product }
-      expect(service.arguments[:test_default]).to eq(product)
+      expect(service.arg[:test_default]).to eq(product)
     end
   end
 end

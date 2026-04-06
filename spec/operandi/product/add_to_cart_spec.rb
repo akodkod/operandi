@@ -12,8 +12,8 @@ RSpec.describe Product::AddToCart do
     it { expect(service.order?).to be(true) }
     it { expect(service.order.products).to include(product) }
     it { expect(service.order.total_price).to be(100_000) }
-    it { expect(service.outputs[:order]).to be_a(Order) }
-    it { expect { service.arguments[:quantity] = 5 }.not_to raise_error }
+    it { expect(service.output[:order]).to be_a(Order) }
+    it { expect { service.arg[:quantity] = 5 }.not_to raise_error }
   end
 
   context "with quantity" do

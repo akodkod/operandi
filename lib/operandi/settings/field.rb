@@ -61,6 +61,11 @@ module Operandi
         end
       end
 
+      FIELD_TYPE_TO_IVAR = {
+        FieldTypes::ARGUMENT => :@arg,
+        FieldTypes::OUTPUT => :@output,
+      }.freeze
+
       private
 
       # Check if sorbet-runtime is available
@@ -109,7 +114,7 @@ module Operandi
 
       def define_methods
         name = @name
-        collection_instance_var = :"@#{@field_type}s"
+        collection_instance_var = FIELD_TYPE_TO_IVAR.fetch(@field_type)
 
         @service_class.define_method(@name) { instance_variable_get(collection_instance_var).get(name) }
         @service_class.define_method(:"#{@name}?") { !!instance_variable_get(collection_instance_var).get(name) }

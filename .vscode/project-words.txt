@@ -3,6 +3,7 @@ andrewmcodes
 bindir
 delegators
 Hanami
+IVAR
 Kodkod
 kwargs
 libsqlite

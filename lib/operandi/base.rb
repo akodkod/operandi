@@ -51,14 +51,23 @@ module Operandi
     include Concerns::StateManagement
     include Concerns::ParentService
 
-    # @return [Collection::Base] collection of output values
-    attr_reader :outputs
-
     # @return [Collection::Base] collection of argument values
-    attr_reader :arguments
+    attr_reader :arg
 
-    alias arg arguments
-    alias output outputs
+    # @return [Collection::Base] collection of output values
+    attr_reader :output
+
+    # @deprecated Use {#arg} instead
+    def arguments
+      warn "[DEPRECATION] `arguments` is deprecated. Use `arg` instead."
+      arg
+    end
+
+    # @deprecated Use {#output} instead
+    def outputs
+      warn "[DEPRECATION] `outputs` is deprecated. Use `output` instead."
+      output
+    end
 
     # @return [Messages] collection of error messages
     attr_reader :errors
@@ -75,8 +84,8 @@ module Operandi
       @config = Operandi.config.merge(self.class.class_config || {}).merge(config)
       @parent_service = parent_service
 
-      @outputs = Collection::Base.new(self, CollectionTypes::OUTPUTS)
-      @arguments = Collection::Base.new(self, CollectionTypes::ARGUMENTS, args.dup)
+      @output = Collection::Base.new(self, CollectionTypes::OUTPUTS)
+      @arg = Collection::Base.new(self, CollectionTypes::ARGUMENTS, args.dup)
 
       @stopped = false
       @launched_steps = []

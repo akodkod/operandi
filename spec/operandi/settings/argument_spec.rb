@@ -126,7 +126,7 @@ RSpec.describe Operandi::Settings::Argument do
       user = User.create!(name: "Test")
       product = Product.create!(name: "Test", price: 100)
       service = Product::AddToCart.run(current_user: user, product: product)
-      expect(service.arguments[:test_default]).to eq(product)
+      expect(service.arg[:test_default]).to eq(product)
     end
 
     it "overrides default when argument provided" do

@@ -35,7 +35,7 @@ RSpec.describe WithRedefinitionBase do
     it "parent allows nil for optional argument" do
       service = described_class.run(name: "test")
       expect(service).to be_successful
-      expect(service.arguments[:options]).to be_nil
+      expect(service.arg[:options]).to be_nil
     end
 
     it "child requires argument when redefined as required" do
@@ -63,12 +63,12 @@ RSpec.describe WithRedefinitionBase do
 
     it "another child uses redefined default 100" do
       service = WithRedefinedDefaults.run(name: "test")
-      expect(service.arguments[:count]).to eq(100)
+      expect(service.arg[:count]).to eq(100)
     end
 
     it "still allows overriding with provided value" do
       service = WithRedefinedDefaults.run(name: "test", count: 42)
-      expect(service.arguments[:count]).to eq(42)
+      expect(service.arg[:count]).to eq(42)
     end
   end
 
@@ -118,7 +118,7 @@ RSpec.describe WithRedefinitionBase do
 
     it "child service uses new default when not set" do
       service = WithRedefinedDefaults.run(name: "test")
-      expect(service.outputs[:data]).to eq({ initialized: true })
+      expect(service.output[:data]).to eq({ initialized: true })
     end
   end
 
@@ -151,7 +151,7 @@ RSpec.describe WithRedefinitionBase do
 
     it "grandchild inherits redefined defaults from parent" do
       service = WithRedefinedGrandchild.run(name: "test", options: {})
-      expect(service.arguments[:count]).to eq(5)
+      expect(service.arg[:count]).to eq(5)
     end
   end
 

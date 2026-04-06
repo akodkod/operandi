@@ -348,14 +348,14 @@ RSpec.describe Operandi::Utils do
         service1 = CreateService.new(params: {})
         service2 = CreateService.new(params: {})
 
-        service1.outputs.load_defaults
-        service2.outputs.load_defaults
+        service1.output.load_defaults
+        service2.output.load_defaults
 
         # Modify first service's output
-        service1.outputs[:data][:key] = "value"
+        service1.output[:data][:key] = "value"
 
         # Second service should have independent copy
-        expect(service2.outputs[:data]).to eq({})
+        expect(service2.output[:data]).to eq({})
       end
     end
   end

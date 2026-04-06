@@ -11,7 +11,7 @@ module Operandi
         self.class.validate_steps!
         run_steps
         run_steps_with_always
-        @outputs.validate! if success?
+        @output.validate! if success?
 
         copy_warnings_to_parent_service
         copy_errors_to_parent_service
@@ -62,9 +62,9 @@ module Operandi
 
       # Load defaults for outputs and arguments, then validate arguments
       def load_defaults_and_validate
-        @outputs.load_defaults
-        @arguments.load_defaults
-        @arguments.validate!
+        @output.load_defaults
+        @arg.load_defaults
+        @arg.validate!
       end
 
       # Execute block within transaction if configured

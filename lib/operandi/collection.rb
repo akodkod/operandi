@@ -8,8 +8,8 @@ module Operandi
     # Storage for service arguments or outputs with type validation.
     #
     # @example Accessing values
-    #   service.arguments[:name]  # => "John"
-    #   service.outputs[:user]    # => #<User id: 1>
+    #   service.arg[:name]     # => "John"
+    #   service.output[:user]  # => #<User id: 1>
     class Base
       extend Forwardable
 

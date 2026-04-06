@@ -47,7 +47,7 @@ module Operandi
     private
 
     def extend_arguments(args)
-      args = @parent_service.arguments.dup.extend_with_context(args) if @parent_service
+      args = @parent_service.arg.dup.extend_with_context(args) if @parent_service
       args[:deepness] += 1 if args[:deepness]
 
       args
