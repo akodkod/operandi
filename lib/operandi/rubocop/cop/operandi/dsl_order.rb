@@ -62,7 +62,12 @@ module RuboCop
         def dsl_call?(node)
           node.send_type? &&
             node.receiver.nil? &&
-            DSL_METHODS.include?(node.method_name)
+            DSL_METHODS.include?(node.method_name) &&
+            class_level?(node)
+        end
+
+        def class_level?(node)
+          node.each_ancestor(:def, :defs, :block).none?
         end
 
         def check_order

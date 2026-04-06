@@ -147,6 +147,44 @@ RSpec.describe RuboCop::Cop::Operandi::DslOrder, :config do
     end
   end
 
+  context "when DSL method names are used inside methods" do
+    it "does not register an offense for arg used inside a method" do
+      expect_no_offenses(<<~RUBY)
+        class MyService < ApplicationService
+          arg :provider, type: String
+
+          step :fetch_user_profile
+
+          output :profile, type: Hash
+
+          private
+
+          def fetch_user_profile
+            provider = arg.provider
+          end
+        end
+      RUBY
+    end
+
+    it "does not register an offense for output used inside a method" do
+      expect_no_offenses(<<~RUBY)
+        class MyService < ApplicationService
+          arg :name, type: String
+
+          step :process
+
+          output :result, type: Hash
+
+          private
+
+          def process
+            output.result = { name: arg.name }
+          end
+        end
+      RUBY
+    end
+  end
+
   context "without class definition" do
     it "does not crash on DSL calls outside a class" do
       expect_no_offenses(<<~RUBY)
