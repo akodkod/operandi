@@ -8,6 +8,7 @@ RuboCop::ConfigLoader.inject_defaults!(default_config)
 
 require_relative "rubocop/cop/operandi/argument_type_required"
 require_relative "rubocop/cop/operandi/condition_method_exists"
+require_relative "rubocop/cop/operandi/deprecated_accessors"
 require_relative "rubocop/cop/operandi/deprecated_methods"
 require_relative "rubocop/cop/operandi/dsl_order"
 require_relative "rubocop/cop/operandi/no_hash_argument"

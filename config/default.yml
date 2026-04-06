@@ -2,6 +2,10 @@ Operandi/ArgumentTypeRequired:
   Enabled: true
   Description: "Requires a `type:` option for all arguments."
 
+Operandi/DeprecatedAccessors:
+  Enabled: true
+  Description: "Detects deprecated `arguments` and `outputs` accessors."
+
 Operandi/ConditionMethodExists:
   Enabled: true
   Description: "Ensures condition methods referenced in `if:` or `unless:` exist."
