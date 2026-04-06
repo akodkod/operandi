@@ -131,7 +131,7 @@ module Tapioca
           return if constant.arguments.empty?
 
           generate_struct_class(klass, "Arguments", constant.arguments)
-          klass.create_method("arguments", return_type: "Arguments")
+          klass.create_method("arg", return_type: "Arguments")
         end
 
         sig { params(klass: RBI::Scope).void }
@@ -139,7 +139,7 @@ module Tapioca
           return if constant.outputs.empty?
 
           generate_struct_class(klass, "Outputs", constant.outputs)
-          klass.create_method("outputs", return_type: "Outputs")
+          klass.create_method("output", return_type: "Outputs")
         end
 
         sig { params(klass: RBI::Scope).void }
