@@ -21,7 +21,7 @@ module RubyLsp
       end
 
       def version
-        Operandi::VERSION
+        ::Operandi::VERSION
       end
 
       # Called on every "go to definition" request
