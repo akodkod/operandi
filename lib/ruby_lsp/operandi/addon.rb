@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "../../operandi/version"
 require_relative "indexing_enhancement"
 require_relative "definition"
 
