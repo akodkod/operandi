@@ -60,7 +60,6 @@ module RuboCop
         def on_send(node)
           return unless @in_service_class
           return unless node.method_name == :add
-          return unless node.receiver&.method_name == :errors
 
           return unless errors_add_base?(node)
 
