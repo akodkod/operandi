@@ -94,9 +94,23 @@ module Operandi
         sorbet_type = sorbet_type?(@type) ? @type : T::Utils.coerce(@type)
         return value if sorbet_type.valid?(value)
 
+        enum_value = deserialize_enum_argument(value)
+        return enum_value if enum_value && sorbet_type.valid?(enum_value)
+
         raise Operandi::ArgTypeError,
               "#{@service_class} #{@field_type} `#{@name}` expected #{sorbet_type.name}, " \
               "but got #{value.class} with value: #{value.inspect}"
+      end
+
+      def deserialize_enum_argument(value)
+        return nil unless @field_type == FieldTypes::ARGUMENT
+        return nil unless sorbet_enum_class?(@type)
+
+        @type.try_deserialize(value)
+      end
+
+      def sorbet_enum_class?(type)
+        defined?(T::Enum) && type.is_a?(Class) && type < T::Enum
       end
 
       # Validate value against Ruby class types

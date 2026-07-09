@@ -183,7 +183,7 @@ module Tapioca
 
         sig { params(name: Symbol, field: ::Operandi::Settings::Field).returns(T.untyped) }
         def create_argument_param(name, field)
-          ruby_type = resolve_type(field)
+          ruby_type = resolve_argument_input_type(field)
           return create_kw_param(name.to_s, type: ruby_type) unless field.optional || field.default_exists
 
           param_type = field.optional ? as_nilable_type(ruby_type) : ruby_type
@@ -208,6 +208,34 @@ module Tapioca
           when Array then default.empty? ? "[]" : "T.unsafe(nil)"
           else "T.unsafe(nil)" # Proc and other complex types
           end
+        end
+
+        sig { params(field: ::Operandi::Settings::Field).returns(String) }
+        def resolve_argument_input_type(field)
+          type = field.instance_variable_get(:@type)
+          return resolve_enum_argument_input_type(type) if sorbet_enum_class?(type)
+
+          resolve_type(field)
+        end
+
+        sig { params(type: T.class_of(T::Enum)).returns(String) }
+        def resolve_enum_argument_input_type(type)
+          any_type_for([ruby_type_for_class(type), *enum_serialized_types(type)])
+        end
+
+        sig { params(type: T.class_of(T::Enum)).returns(T::Array[String]) }
+        def enum_serialized_types(type)
+          type.values.map { |value| ruby_type_for_class(value.serialize.class) }.uniq
+        rescue StandardError
+          []
+        end
+
+        sig { params(types: T::Array[String]).returns(String) }
+        def any_type_for(types)
+          resolved_types = types.uniq
+          return resolved_types.first if resolved_types.size == 1
+
+          "T.any(#{resolved_types.join(', ')})"
         end
 
         sig { params(klass: RBI::Scope, field: ::Operandi::Settings::Field).void }
@@ -285,6 +313,23 @@ module Tapioca
         sig { params(type: T.untyped).returns(T::Boolean) }
         def sorbet_type?(type)
           defined?(T::Types::Base) && type.is_a?(T::Types::Base)
+        end
+
+        sig { params(type: T.untyped).returns(T::Boolean) }
+        def sorbet_enum_class?(type)
+          return false unless type.is_a?(Class)
+
+          (defined?(T::Enum) && type < T::Enum) || serializable_enum_class?(type)
+        end
+
+        sig { params(type: Class).returns(T::Boolean) }
+        def serializable_enum_class?(type)
+          type.respond_to?(:try_deserialize) &&
+            type.respond_to?(:values) &&
+            type.values.any? &&
+            type.values.all? { |value| value.respond_to?(:serialize) }
+        rescue StandardError
+          false
         end
 
         sig { params(type: T.untyped).returns(String) }

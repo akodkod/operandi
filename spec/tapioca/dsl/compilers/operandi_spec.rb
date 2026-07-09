@@ -19,6 +19,24 @@ unless defined?(T::Sig)
   end
 end
 
+unless defined?(T::Enum)
+  module T
+    class Enum
+      def initialize(serialized_value)
+        @serialized_value = serialized_value
+      end
+
+      def serialize
+        @serialized_value
+      end
+
+      def self.values
+        []
+      end
+    end
+  end
+end
+
 # Mock Tapioca modules for testing without tapioca dependency
 module Tapioca
   module Dsl
@@ -159,6 +177,28 @@ class MockMethod
   end
 end
 
+class TapiocaCompilerStatus
+  def initialize(serialized_value)
+    @serialized_value = serialized_value
+  end
+
+  def serialize
+    @serialized_value
+  end
+
+  Active = new("active")
+  Archived = new("archived")
+  VALUES = [Active, Archived].freeze
+
+  def self.values
+    VALUES
+  end
+
+  def self.try_deserialize(value)
+    values.find { |enum_value| enum_value.serialize == value }
+  end
+end
+
 require_relative "../../../../lib/tapioca/dsl/compilers/operandi"
 
 RSpec.describe Tapioca::Dsl::Compilers::Operandi do
@@ -257,6 +297,78 @@ RSpec.describe Tapioca::Dsl::Compilers::Operandi do
 
         setter = find_method(scope, "email=")
         expect(setter.parameters.first.type).to eq("T.nilable(::String)")
+      end
+    end
+
+    context "with enum argument" do
+      let(:service_class) do
+        Class.new(Operandi::Base) do
+          def self.name
+            "TestEnumArgService"
+          end
+
+          arg :status, type: TapiocaCompilerStatus
+        end
+      end
+
+      it "generates run parameter accepting enum values and raw serialized values" do
+        scope = compiler.decorate
+
+        run_method = find_method(scope, "run")
+        status_param = run_method.parameters.find { |p| p.name == "status" }
+
+        expect(status_param.type).to eq("T.any(::TapiocaCompilerStatus, ::String)")
+      end
+
+      it "generates run! parameter accepting enum values and raw serialized values" do
+        scope = compiler.decorate
+
+        run_bang_method = find_method(scope, "run!")
+        status_param = run_bang_method.parameters.find { |p| p.name == "status" }
+
+        expect(status_param.type).to eq("T.any(::TapiocaCompilerStatus, ::String)")
+      end
+
+      it "keeps getter and setter typed as the enum class" do
+        scope = compiler.decorate
+
+        getter = find_method(scope, "status")
+        setter = find_method(scope, "status=")
+
+        expect(getter.return_type).to eq("::TapiocaCompilerStatus")
+        expect(setter.return_type).to eq("::TapiocaCompilerStatus")
+        expect(setter.parameters.first.type).to eq("::TapiocaCompilerStatus")
+      end
+    end
+
+    context "with optional enum argument" do
+      let(:service_class) do
+        Class.new(Operandi::Base) do
+          def self.name
+            "TestOptionalEnumArgService"
+          end
+
+          arg :status, type: TapiocaCompilerStatus, optional: true
+        end
+      end
+
+      it "generates nilable run parameter accepting enum values and raw serialized values" do
+        scope = compiler.decorate
+
+        run_method = find_method(scope, "run")
+        status_param = run_method.parameters.find { |p| p.name == "status" }
+
+        expect(status_param.type).to eq("T.nilable(T.any(::TapiocaCompilerStatus, ::String))")
+      end
+
+      it "keeps getter and setter nilable over the enum class only" do
+        scope = compiler.decorate
+
+        getter = find_method(scope, "status")
+        setter = find_method(scope, "status=")
+
+        expect(getter.return_type).to eq("T.nilable(::TapiocaCompilerStatus)")
+        expect(setter.parameters.first.type).to eq("T.nilable(::TapiocaCompilerStatus)")
       end
     end
 

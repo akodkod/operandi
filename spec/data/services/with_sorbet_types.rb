@@ -2,6 +2,13 @@
 
 require "sorbet-runtime"
 
+class SorbetNotificationStatus < T::Enum
+  enums do
+    Queued = new("queued")
+    Sent = new("sent")
+  end
+end
+
 class WithSorbetTypes < ApplicationService
   # Arguments with Sorbet runtime type validation
   # Plain Ruby classes are automatically coerced to Sorbet types when sorbet-runtime is loaded
@@ -11,6 +18,8 @@ class WithSorbetTypes < ApplicationService
   arg :status, type: T.any(String, Symbol), default: "pending"
   arg :tags, type: T::Array[String], optional: true
   arg :active, type: T::Boolean, optional: true
+  arg :notification_status, type: SorbetNotificationStatus, default: "queued"
+  arg :optional_notification_status, type: SorbetNotificationStatus, optional: true
 
   # Outputs with Sorbet runtime type validation
   output :greeting, type: String
@@ -40,6 +49,8 @@ class WithSorbetTypes < ApplicationService
       tags: tags || [],
       email: email,
       active: active,
+      notification_status: notification_status,
+      optional_notification_status: optional_notification_status,
     }
   end
 end

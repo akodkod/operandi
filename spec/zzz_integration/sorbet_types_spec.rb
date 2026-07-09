@@ -103,6 +103,47 @@ RSpec.describe "Sorbet Runtime Types Support" do # rubocop:disable RSpec/Describ
             .to raise_error(Operandi::ArgTypeError, /`active`/)
         end
       end
+
+      context "with T::Enum" do
+        it "accepts enum values" do
+          service = described_class.run(
+            name: "John",
+            age: 25,
+            notification_status: SorbetNotificationStatus::Sent,
+          )
+
+          expect(service).to be_successful
+          expect(service.notification_status).to eq(SorbetNotificationStatus::Sent)
+          expect(service.full_data[:notification_status]).to eq(SorbetNotificationStatus::Sent)
+        end
+
+        it "deserializes raw enum values" do
+          service = described_class.run(name: "John", age: 25, notification_status: "sent")
+
+          expect(service).to be_successful
+          expect(service.notification_status).to eq(SorbetNotificationStatus::Sent)
+          expect(service.full_data[:notification_status]).to eq(SorbetNotificationStatus::Sent)
+        end
+
+        it "deserializes raw enum defaults" do
+          service = described_class.run(name: "John", age: 25)
+
+          expect(service).to be_successful
+          expect(service.notification_status).to eq(SorbetNotificationStatus::Queued)
+        end
+
+        it "accepts nil for optional enum arguments" do
+          service = described_class.run(name: "John", age: 25, optional_notification_status: nil)
+
+          expect(service).to be_successful
+          expect(service.optional_notification_status).to be_nil
+        end
+
+        it "raises error for invalid raw enum values" do
+          expect { described_class.run(name: "John", age: 25, notification_status: "missing") }
+            .to raise_error(Operandi::ArgTypeError, /`notification_status`/)
+        end
+      end
     end
 
     describe "output validation with Sorbet types" do
