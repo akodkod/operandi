@@ -26,9 +26,9 @@ class WithDone < ApplicationService
   def letter_b
     self.word += "b"
 
-    done!
+    stop!
 
-    self.word += "!" unless done?
+    self.word += "!" unless stopped?
   end
 
   def letter_c

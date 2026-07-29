@@ -211,15 +211,11 @@ RSpec.describe Operandi::Collection::Arguments do
     end
   end
 
-  describe "deprecated #arguments alias" do
+  describe "removed #arguments alias" do
     let(:service) { WithConditions.run }
 
-    it "returns the same object as #arg" do
-      expect(service.arguments).to be(service.arg)
-    end
-
-    it "emits a deprecation warning" do
-      expect { service.arguments }.to output(/DEPRECATION.*Use `arg` instead/).to_stderr
+    it "is not exposed" do
+      expect(service).not_to respond_to(:arguments)
     end
   end
 end
@@ -247,15 +243,11 @@ RSpec.describe Operandi::Collection::Outputs do
     end
   end
 
-  describe "deprecated #outputs alias" do
+  describe "removed #outputs alias" do
     let(:service) { WithConditions.run }
 
-    it "returns the same object as #output" do
-      expect(service.outputs).to be(service.output)
-    end
-
-    it "emits a deprecation warning" do
-      expect { service.outputs }.to output(/DEPRECATION.*Use `output` instead/).to_stderr
+    it "is not exposed" do
+      expect(service).not_to respond_to(:outputs)
     end
   end
 end

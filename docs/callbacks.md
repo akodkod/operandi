@@ -343,7 +343,7 @@ class ApplicationService < Operandi::Base
 
   def log_start(service)
     Rails.logger.tagged(service.class.name) do
-      Rails.logger.info "Started with arguments: #{service.arguments.to_h}"
+      Rails.logger.info "Started with arguments: #{service.arg.to_h}"
     end
   end
 
@@ -394,7 +394,7 @@ class ApplicationService < Operandi::Base
       report.add_metadata(:service, {
         class: service.class.name,
         errors: service.errors.full_messages,
-        arguments: service.arguments.to_h
+        arguments: service.arg.to_h
       })
     end
   end
@@ -472,5 +472,4 @@ end
 Learn about testing your services, including how to test callbacks.
 
 [Next: Testing](testing.md)
-
 

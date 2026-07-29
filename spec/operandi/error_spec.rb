@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.context Operandi::Error do
+  context "with removed exception aliases" do
+    it "does not define NoStepError or TwoConditions" do
+      expect(Operandi.const_defined?(:NoStepError, false)).to be(false)
+      expect(Operandi.const_defined?(:TwoConditions, false)).to be(false)
+    end
+  end
+
   context "with two conditions for one step" do
     let(:class_code) do
       <<-RUBY
@@ -11,7 +18,7 @@ RSpec.context Operandi::Error do
     end
 
     it do
-      expect { eval(class_code) }.to raise_error(Operandi::TwoConditions)
+      expect { eval(class_code) }.to raise_error(Operandi::Error)
     end
   end
 
@@ -63,7 +70,7 @@ RSpec.context Operandi::Error do
     end
 
     it do
-      expect { eval(class_code) }.to raise_error(Operandi::NoStepError)
+      expect { eval(class_code) }.to raise_error(Operandi::Error)
     end
   end
 

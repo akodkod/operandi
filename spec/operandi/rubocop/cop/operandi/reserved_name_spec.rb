@@ -19,11 +19,11 @@ RSpec.describe RuboCop::Cop::Operandi::ReservedName, :config do
       RUBY
     end
 
-    it "registers an offense for :outputs" do
+    it "registers an offense for :output" do
       expect_offense(<<~RUBY)
         class MyService < ApplicationService
-          arg :outputs, type: Hash
-          ^^^^^^^^^^^^^^^^^^^^^^^^ Operandi/ReservedName: `outputs` is a reserved name and cannot be used as an argument. It conflicts with Operandi methods.
+          arg :output, type: Hash
+          ^^^^^^^^^^^^^^^^^^^^^^^ Operandi/ReservedName: `output` is a reserved name and cannot be used as an argument. It conflicts with Operandi methods.
         end
       RUBY
     end
@@ -130,6 +130,7 @@ RSpec.describe RuboCop::Cop::Operandi::ReservedName, :config do
           arg :user_id, type: Integer
           arg :params, type: Hash
           arg :validation_errors, type: Array
+          arg :arguments, type: Hash
         end
       RUBY
     end
@@ -150,6 +151,7 @@ RSpec.describe RuboCop::Cop::Operandi::ReservedName, :config do
           output :result, type: Hash
           output :user, type: User
           output :succeeded, type: [TrueClass, FalseClass]
+          output :outputs, type: Hash
         end
       RUBY
     end

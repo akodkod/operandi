@@ -4,8 +4,8 @@ RSpec.describe "Reserved Names Validation" do # rubocop:disable RSpec/DescribeCl
   describe "ReservedNames constants" do
     it "includes expected base methods" do
       expect(Operandi::ReservedNames::BASE_METHODS).to include(
-        :outputs,
-        :arguments,
+        :arg,
+        :output,
         :errors,
         :warnings,
         :success?,
@@ -15,9 +15,16 @@ RSpec.describe "Reserved Names Validation" do # rubocop:disable RSpec/DescribeCl
         :stop!,
         :stopped?,
         :stop_immediately!,
+        :call,
+      )
+    end
+
+    it "does not list removed methods as base methods" do
+      expect(Operandi::ReservedNames::BASE_METHODS).not_to include(
+        :arguments,
+        :outputs,
         :done!,
         :done?,
-        :call,
       )
     end
 
@@ -45,9 +52,10 @@ RSpec.describe "Reserved Names Validation" do # rubocop:disable RSpec/DescribeCl
 
     it "combines all reserved names into ALL constant" do
       all_names = Operandi::ReservedNames::ALL
-      expect(all_names).to include(:outputs)
+      expect(all_names).to include(:output)
       expect(all_names).to include(:before_step_run)
       expect(all_names).to include(:initialize)
+      expect(all_names).not_to include(:arguments, :outputs)
     end
   end
 
@@ -90,6 +98,7 @@ RSpec.describe "Reserved Names Validation" do # rubocop:disable RSpec/DescribeCl
         Class.new(Operandi::Base) do
           arg :user_name, type: String
           arg :email, type: String
+          arg :arguments, type: Hash
         end
       end.not_to raise_error
     end
@@ -134,6 +143,7 @@ RSpec.describe "Reserved Names Validation" do # rubocop:disable RSpec/DescribeCl
         Class.new(Operandi::Base) do
           output :result, type: Hash
           output :status, type: String
+          output :outputs, type: Hash
         end
       end.not_to raise_error
     end

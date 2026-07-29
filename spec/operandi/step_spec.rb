@@ -94,11 +94,11 @@ RSpec.describe Operandi::Settings::Step do
     end
   end
 
-  describe "done! behavior" do
+  describe "stop! behavior" do
     let(:service) { WithDone.run(add_c: true, do_not_add_d: false) }
 
     it "stops execution of subsequent steps" do
-      # done! is called in letter_b, so letter_c and letter_d never run
+      # stop! is called in letter_b, so letter_c and letter_d never run
       expect(service.word).to eq("ab")
     end
   end
@@ -111,9 +111,9 @@ RSpec.describe Operandi::Settings::Step do
         stub_const("TestStepService", Class.new(Operandi::Base))
       end
 
-      it "raises NoStepError" do
+      it "raises Error" do
         instance = TestStepService.new
-        expect { step.run(instance) }.to raise_error(Operandi::NoStepError, /Step method .* is not defined/)
+        expect { step.run(instance) }.to raise_error(Operandi::Error, /Step method .* is not defined/)
       end
     end
   end

@@ -64,8 +64,8 @@ RSpec.describe Operandi::Base do
       expect(service.word).to eq("ab")
     end
 
-    it "is aliased as done! for backward compatibility" do
-      expect(service).to respond_to(:done!)
+    it "does not expose the removed done! alias" do
+      expect(service).not_to respond_to(:done!)
     end
   end
 
@@ -76,8 +76,8 @@ RSpec.describe Operandi::Base do
       expect(service.stopped?).to be(true)
     end
 
-    it "is aliased as done? for backward compatibility" do
-      expect(service.done?).to be(true)
+    it "does not expose the removed done? alias" do
+      expect(service).not_to respond_to(:done?)
     end
   end
 

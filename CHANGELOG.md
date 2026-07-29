@@ -4,6 +4,16 @@
 
 ### Added
 
+- ...
+
+### Breaking changes
+
+- Remove deprecated methods: `done!`, `done?`, `arguments` and `outputs` methods
+
+## 4.0.0 (2026-01-01)
+
+### Added
+
 - Allow to specify `parent: true` for `step` to skip `StepMethodExists` Rubocop cop
 
 ### Breaking changes

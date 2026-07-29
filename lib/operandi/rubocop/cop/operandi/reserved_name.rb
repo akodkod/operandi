@@ -11,13 +11,13 @@ module RuboCop
       # @example
       #   # bad
       #   arg :errors, type: Array
-      #   arg :outputs, type: Hash
+      #   arg :output, type: Hash
       #   step :call
       #   output :success?, type: [TrueClass, FalseClass]
       #
       #   # good
       #   arg :validation_errors, type: Array
-      #   arg :result_outputs, type: Hash
+      #   arg :result_output, type: Hash
       #   step :execute
       #   output :succeeded, type: [TrueClass, FalseClass]
       #

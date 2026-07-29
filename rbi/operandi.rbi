@@ -32,14 +32,8 @@ module Operandi
     sig { void }
     def stop!; end
 
-    sig { void }
-    def done!; end
-
     sig { returns(T::Boolean) }
     def stopped?; end
-
-    sig { returns(T::Boolean) }
-    def done?; end
 
     sig { returns(T.noreturn) }
     def stop_immediately!; end

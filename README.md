@@ -25,7 +25,7 @@ Operandi is a simple yet powerful way to organize business logic in Ruby applica
 ## Installation
 
 ```ruby
-gem "operandi", "~> 4.0"
+gem "operandi", "~> 5.0"
 ```
 
 ```bash

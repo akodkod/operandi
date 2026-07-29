@@ -22,8 +22,6 @@ module Operandi
   module ReservedNames
     # Instance methods from Base class and concerns
     BASE_METHODS = [
-      :outputs,
-      :arguments,
       :arg,
       :output,
       :errors,
@@ -35,8 +33,6 @@ module Operandi
       :stop!,
       :stopped?,
       :stop_immediately!,
-      :done!,
-      :done?,
       :call,
       :run_callbacks,
     ].freeze

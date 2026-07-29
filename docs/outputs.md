@@ -41,20 +41,20 @@ class AI::Chat < ApplicationService
 end
 ```
 
-To set outputs programmatically, use the `outputs.set` method or hash syntax.
+To set outputs programmatically, use the `output.set` method or hash syntax.
 
 ```ruby
 class AI::Chat < ApplicationService
   # ...
 
   def chat
-    outputs.set(:messages, ["Hello!", "Hi, how are you?"])
-    outputs.set(:cost, 0.0013)
+    output.set(:messages, ["Hello!", "Hi, how are you?"])
+    output.set(:cost, 0.0013)
 
     # Or use hash syntax
 
-    outputs[:messages] = ["Hello!", "Hi, how are you?"]
-    outputs[:cost] = 0.0013
+    output[:messages] = ["Hello!", "Hi, how are you?"]
+    output[:cost] = 0.0013
   end
 end
 ```
@@ -148,4 +148,3 @@ end
 Next, learn about context.
 
 [Next: Context](context.md)
-

@@ -222,9 +222,9 @@ class HappyBirthdayService < ApplicationService
 end
 ```
 
-## Accessing Arguments Using `arguments`
+## Accessing Arguments Using `arg`
 
-For dynamic access or to avoid conflicts, use the `arguments` method.
+For dynamic access or to avoid conflicts, use the `arg` method.
 
 ```ruby
 class HappyBirthdayService < ApplicationService
@@ -238,8 +238,8 @@ class HappyBirthdayService < ApplicationService
   private
 
   def greet
-    name = arguments[:name] # or arguments.get(:name)
-    age = arguments[:age] # or arguments.get(:age)
+    name = arg[:name] # or arg.get(:name)
+    age = arg[:age] # or arg.get(:age)
 
     puts "Happy birthday, #{name}! You are #{age} years old."
   end
@@ -273,4 +273,3 @@ The predicate methods return `true` or `false` based on Ruby's convention: `nil`
 Next step is `steps` (I love this pun). Steps are the building blocks of a service, the methods that do the actual work.
 
 [Next: Steps](steps.md)
-

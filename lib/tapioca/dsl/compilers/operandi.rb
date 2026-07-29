@@ -41,10 +41,10 @@ module Tapioca
       #     end
       #
       #     sig { returns(Arguments) }
-      #     def arguments; end
+      #     def arg; end
       #
       #     sig { returns(Outputs) }
-      #     def outputs; end
+      #     def output; end
       #
       #     sig { returns(String) }
       #     def name; end

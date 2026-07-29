@@ -26,7 +26,7 @@ class UpdateService < ApplicationService
   end
 
   def load_entity
-    self.entity = arguments.get(argument_key)
+    self.entity = arg.get(argument_key)
   end
 
   def assign_attributes

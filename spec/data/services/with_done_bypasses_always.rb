@@ -11,9 +11,9 @@ class WithDoneBypassesAlways < ApplicationService
   def work
     trace << :work
 
-    done!
+    stop!
 
-    # Code after done! still runs within the same step.
+    # Code after stop! still runs within the same step.
     trace << :after_done
   end
 

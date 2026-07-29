@@ -8,7 +8,7 @@ Steps are the core components of a service, each representing a unit of work exe
 - Use `if` and `unless` options for conditional steps
 - Inherit steps from parent classes
 - Inject steps into the execution flow with `before` and `after` options
-- Ensure cleanup steps run with the `always: true` option (unless `done!` was called)
+- Ensure cleanup steps run with the `always: true` option (unless `stop!` was called)
 - Use a `run` method as a simple alternative for single-step services
 
 ```ruby
@@ -159,7 +159,7 @@ By default, if neither `before` nor `after` is specified, the step is added at t
 
 To ensure certain steps run regardless of previous step outcomes (errors, warnings, failed validations), use the `always: true` option. This is particularly useful for cleanup tasks, error logging, etc.
 
-Note: if `done!` was called, the service exits early and `always: true` steps will **not** run.
+Note: if `stop!` was called, the service exits early and `always: true` steps will **not** run.
 
 ```ruby
 class ParsePage < ApplicationService
@@ -240,10 +240,6 @@ end
 
 {% hint style="success" %}
 **Database Transactions:** Calling `stop!` does NOT rollback database transactions. All database changes made before `stop!` was called will be committed.
-{% endhint %}
-
-{% hint style="info" %}
-**Backward Compatibility:** `done!` and `done?` are still available as aliases for `stop!` and `stopped?`.
 {% endhint %}
 
 ## Immediate Exit with `stop_immediately!`
@@ -440,4 +436,3 @@ If a service has no steps defined and no `run` method (including from parent cla
 Next step is to learn about outputs. Outputs are the results of a service, returned upon completion of service execution.
 
 [Next: Outputs](outputs.md)
-

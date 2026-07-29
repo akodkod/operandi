@@ -57,18 +57,6 @@ module Operandi
     # @return [Collection::Base] collection of output values
     attr_reader :output
 
-    # @deprecated Use {#arg} instead
-    def arguments
-      warn "[DEPRECATION] `arguments` is deprecated. Use `arg` instead."
-      arg
-    end
-
-    # @deprecated Use {#output} instead
-    def outputs
-      warn "[DEPRECATION] `outputs` is deprecated. Use `output` instead."
-      output
-    end
-
     # @return [Messages] collection of error messages
     attr_reader :errors
 
@@ -129,7 +117,6 @@ module Operandi
     def stop!
       @stopped = true
     end
-    alias done! stop!
 
     # Check if the service has been stopped.
     #
@@ -137,7 +124,6 @@ module Operandi
     def stopped?
       @stopped
     end
-    alias done? stopped?
 
     # Stop execution immediately, skipping any remaining code in the current step.
     #

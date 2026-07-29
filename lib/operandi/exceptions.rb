@@ -26,10 +26,4 @@ module Operandi
   # Control flow exception for fail_immediately!
   # Unlike StopExecution, this exception causes transaction rollback.
   class FailExecution < StandardError; end
-
-  # @deprecated Use {Error} instead
-  NoStepError = Error
-
-  # @deprecated Use {Error} instead
-  TwoConditions = Error
 end

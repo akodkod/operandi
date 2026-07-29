@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    operandi (4.0.0)
+    operandi (5.0.0)
 
 GEM
   remote: https://rubygems.org/

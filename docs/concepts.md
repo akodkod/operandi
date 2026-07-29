@@ -38,7 +38,7 @@ When you call `MyService.run(args)`, the following happens:
 ├──────────────────────────────────────────────────────────────┤
 │ 14. Return service instance                                  │
 │     - service.success? / service.failed?                     │
-│     - service.outputs / service.errors                       │
+│     - service.output / service.errors                        │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -77,4 +77,3 @@ Errors occur during service execution and cause execution to halt. When an error
 Callbacks allow you to run custom code at specific points during service and step execution. They're perfect for logging, benchmarking, auditing, and other cross-cutting concerns.
 
 [Read more about callbacks](callbacks.md)
-
