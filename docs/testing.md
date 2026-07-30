@@ -209,7 +209,7 @@ RSpec.describe MyService do
     it "raises exception when configured" do
       expect {
         described_class.run({ invalid: true }, { raise_on_error: true })
-      }.to raise_error(Operandi::Error)
+      }.to raise_error(Operandi::RuntimeError)
     end
 
     it "collects errors by default" do
@@ -239,7 +239,7 @@ RSpec.describe Payment::Process do
     it "raises exception on error" do
       expect {
         described_class.run!(amount: -100)
-      }.to raise_error(Operandi::Error, /Amount must be positive/)
+      }.to raise_error(Operandi::RuntimeError, /Amount must be positive/)
     end
   end
 end
@@ -546,4 +546,3 @@ end
 Learn best practices for organizing your services:
 
 [Next: Best Practices](best-practices.md)
-

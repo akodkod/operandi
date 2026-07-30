@@ -351,8 +351,10 @@ RSpec.describe Operandi::Base do
     end
 
     context "when service fails" do
-      it "raises an error" do
-        expect { WithClassConfig.run! }.to raise_error(Operandi::Error)
+      it "raises RuntimeError with the service instance" do
+        expect { WithClassConfig.run! }.to raise_error(Operandi::RuntimeError) { |error|
+          expect(error.service).to be_an_instance_of(WithClassConfig)
+        }
       end
     end
   end
@@ -377,8 +379,10 @@ RSpec.describe Operandi::Base do
     end
 
     context "with invalid parent service" do
-      it "raises ArgTypeError" do
-        expect { WithConditions.with(Object.new).run }.to raise_error(Operandi::ArgTypeError)
+      it "raises ArgTypeError with the child service class" do
+        expect { WithConditions.with(Object.new).run }.to raise_error(Operandi::ArgTypeError) { |error|
+          expect(error.service_class).to equal(WithConditions)
+        }
       end
     end
   end

@@ -38,15 +38,15 @@ module Operandi
       #
       # @param instance [Base] the service instance
       # @return [Boolean] true if the step was executed, false if skipped
-      # @raise [Error] if the step method is not defined
+      # @raise [RuntimeError] if the step method is not defined
       def run(instance) # rubocop:disable Naming/PredicateMethod
         return false unless run?(instance)
 
         unless instance.respond_to?(name, true)
           available_steps = @service_class.steps.keys.join(", ")
-          raise Operandi::Error,
-                "Step method `#{name}` is not defined in #{@service_class}. " \
-                "Defined steps: [#{available_steps}]"
+          message = "Step method `#{name}` is not defined in #{@service_class}. " \
+                    "Defined steps: [#{available_steps}]"
+          raise Operandi::RuntimeError.new(message, service: instance)
         end
 
         execute_with_callbacks(instance)
@@ -95,8 +95,9 @@ module Operandi
         when Proc
           instance.instance_exec(&condition)
         else
-          raise Operandi::Error, "#{@service_class} condition should be a Symbol or Proc " \
-                                 "for the step `#{@name}` (currently: #{condition.class})"
+          message = "#{@service_class} condition should be a Symbol or Proc " \
+                    "for the step `#{@name}` (currently: #{condition.class})"
+          raise Operandi::RuntimeError.new(message, service: instance)
         end
       end
     end

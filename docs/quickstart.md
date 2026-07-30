@@ -112,7 +112,7 @@ end
 Use `run!` when you want errors to raise exceptions instead of being collected:
 
 ```ruby
-# This will raise Operandi::Error if any errors are added
+# This will raise Operandi::RuntimeError if any errors are added
 service = GreetService.run!(name: "John")
 ```
 
@@ -131,4 +131,3 @@ Looks easy, right? But this is just the beginning. Operandi can do much more ðŸš
 Learn how to configure Operandi for your application:
 
 [Next: Configuration](configuration.md)
-

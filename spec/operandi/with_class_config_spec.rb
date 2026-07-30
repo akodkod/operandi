@@ -16,8 +16,10 @@ RSpec.describe Operandi::Base, ".config DSL" do # rubocop:disable RSpec/SpecFile
       end
     end
 
-    it "raises Operandi::Error when an error is added" do
-      expect { service_class.run }.to raise_error(Operandi::Error)
+    it "raises Operandi::RuntimeError with the service when an error is added" do
+      expect { service_class.run }.to raise_error(Operandi::RuntimeError) { |error|
+        expect(error.service).to be_an_instance_of(service_class)
+      }
     end
   end
 
@@ -172,8 +174,10 @@ RSpec.describe Operandi::Base, ".config DSL" do # rubocop:disable RSpec/SpecFile
       end
     end
 
-    it "raises Operandi::Error when a warning is added" do
-      expect { service_class.run }.to raise_error(Operandi::Error)
+    it "raises Operandi::RuntimeError with the service when a warning is added" do
+      expect { service_class.run }.to raise_error(Operandi::RuntimeError) { |error|
+        expect(error.service).to be_an_instance_of(service_class)
+      }
     end
   end
 
@@ -318,7 +322,9 @@ RSpec.describe Operandi::Base, ".config DSL" do # rubocop:disable RSpec/SpecFile
           errors.add(:base, "error")
         end
       end
-      expect { parent_class.run }.to raise_error(Operandi::Error)
+      expect { parent_class.run }.to raise_error(Operandi::RuntimeError) { |error|
+        expect(error.service).to be_an_instance_of(parent_class)
+      }
     end
   end
 

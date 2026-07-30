@@ -5,6 +5,24 @@
 # These signatures provide Sorbet type checking without requiring sorbet-runtime as a dependency.
 
 module Operandi
+  class Error < StandardError; end
+
+  class RuntimeError < Error
+    sig { params(message: T.nilable(String), service: Operandi::Base).void }
+    def initialize(message = nil, service:); end
+
+    sig { returns(Operandi::Base) }
+    def service; end
+  end
+
+  class ArgTypeError < Error
+    sig { params(message: T.nilable(String), service_class: T.class_of(Operandi::Base)).void }
+    def initialize(message = nil, service_class:); end
+
+    sig { returns(T.class_of(Operandi::Base)) }
+    def service_class; end
+  end
+
   class Base
     # Attributes
     sig { returns(Operandi::Messages) }
@@ -92,8 +110,13 @@ module Operandi
   end
 
   class Messages
-    sig { params(config: T::Hash[Symbol, T.untyped]).void }
-    def initialize(config); end
+    sig {
+      params(
+        config: T::Hash[Symbol, T.untyped],
+        service: Operandi::Base,
+      ).void
+    }
+    def initialize(config = {}, service:); end
 
     sig { params(key: Symbol).returns(T.nilable(T::Array[Operandi::Message])) }
     def [](key); end

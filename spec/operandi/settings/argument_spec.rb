@@ -15,7 +15,9 @@ RSpec.describe Operandi::Settings::Argument do
 
       it "rejects string when type is boolean" do
         expect { WithMultipleTypes.run(value: "test", flag: "true") }
-          .to raise_error(Operandi::ArgTypeError, /must be TrueClass or FalseClass/)
+          .to raise_error(Operandi::ArgTypeError, /must be TrueClass or FalseClass/) { |error|
+            expect(error.service_class).to equal(WithMultipleTypes)
+          }
       end
 
       it "rejects integer when type is boolean" do

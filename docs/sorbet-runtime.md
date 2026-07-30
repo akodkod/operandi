@@ -208,11 +208,17 @@ With Tapioca configured, you get:
 
 ## Error Messages
 
-When type validation fails, Operandi raises `ArgTypeError` with a descriptive message:
+When type validation fails, Operandi raises `ArgTypeError` with a descriptive message
+and the associated service class:
 
 ```ruby
-service = User::Create.run(name: 123, age: 25)
-# => Operandi::ArgTypeError: User::Create argument `name` expected String, but got Integer with value: 123
+begin
+  User::Create.run(name: 123, age: 25)
+rescue Operandi::ArgTypeError => error
+  error.service_class # => User::Create
+  error.message
+  # => "User::Create argument `name` expected String, but got Integer with value: 123"
+end
 ```
 
 ## Full Example

@@ -97,9 +97,10 @@ module Operandi
         enum_value = deserialize_enum_argument(value)
         return enum_value if enum_value && sorbet_type.valid?(enum_value)
 
-        raise Operandi::ArgTypeError,
-              "#{@service_class} #{@field_type} `#{@name}` expected #{sorbet_type.name}, " \
-              "but got #{value.class} with value: #{value.inspect}"
+        message = "#{@service_class} #{@field_type} `#{@name}` expected #{sorbet_type.name}, " \
+                  "but got #{value.class} with value: #{value.inspect}"
+
+        raise Operandi::ArgTypeError.new(message, service_class: @service_class)
       end
 
       def deserialize_enum_argument(value)
@@ -117,7 +118,7 @@ module Operandi
       def validate_ruby_type!(value)
         return if [*@type].any? { |type| value.is_a?(type) }
 
-        raise Operandi::ArgTypeError, type_error_message(value)
+        raise Operandi::ArgTypeError.new(type_error_message(value), service_class: @service_class)
       end
 
       def type_error_message(value)

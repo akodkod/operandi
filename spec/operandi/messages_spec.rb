@@ -2,7 +2,14 @@
 
 RSpec.describe Operandi::Messages do
   let(:config) { { break_on_add: false, raise_on_add: false, rollback_on_add: false } }
-  let(:messages) { described_class.new(config) }
+  let(:service) { Class.new(Operandi::Base).new }
+  let(:messages) { described_class.new(config, service: service) }
+
+  describe "#initialize" do
+    it "requires a service" do
+      expect { described_class.new(config) }.to raise_error(ArgumentError, /missing keyword: :service/)
+    end
+  end
 
   describe "#add" do
     it "adds a message with key and text" do
@@ -30,19 +37,24 @@ RSpec.describe Operandi::Messages do
 
     context "when text is nil" do
       it "raises an error" do
-        expect { messages.add(:base, nil) }.to raise_error(Operandi::Error, "Error must be a non-empty string")
+        expect { messages.add(:base, nil) }.to raise_error(Operandi::RuntimeError) { |error|
+          expect(error.message).to eq("Error must be a non-empty string")
+          expect(error.service).to equal(service)
+        }
       end
     end
 
     context "when text is empty string" do
       it "raises an error" do
-        expect { messages.add(:base, "") }.to raise_error(Operandi::Error, "Error must be a non-empty string")
+        expect { messages.add(:base, "") }
+          .to raise_error(Operandi::RuntimeError, "Error must be a non-empty string")
       end
     end
 
     context "when text is blank whitespace" do
       it "raises an error" do
-        expect { messages.add(:base, "   ") }.to raise_error(Operandi::Error, "Error must be a non-empty string")
+        expect { messages.add(:base, "   ") }
+          .to raise_error(Operandi::RuntimeError, "Error must be a non-empty string")
       end
     end
   end
@@ -72,7 +84,10 @@ RSpec.describe Operandi::Messages do
       end
 
       it "does not break when break: false is passed even if config says break" do
-        messages_with_break = described_class.new(break_on_add: true, raise_on_add: false, rollback_on_add: false)
+        messages_with_break = described_class.new(
+          { break_on_add: true, raise_on_add: false, rollback_on_add: false },
+          service: service,
+        )
         messages_with_break.add(:base, "error", break: false)
         expect(messages_with_break.break?).to be(false)
       end
@@ -102,7 +117,7 @@ RSpec.describe Operandi::Messages do
 
     context "with Messages object" do
       it "copies messages from another Messages object" do
-        other = described_class.new(config)
+        other = described_class.new(config, service: service)
         other.add(:base, "error from other")
         messages.copy_from(other)
         expect(messages[:base].first.text).to eq("error from other")
@@ -118,7 +133,8 @@ RSpec.describe Operandi::Messages do
 
     context "with unsupported type" do
       it "raises an error" do
-        expect { messages.copy_from("string") }.to raise_error(Operandi::Error, /Don't know how to import/)
+        expect { messages.copy_from("string") }
+          .to raise_error(Operandi::RuntimeError, /Don't know how to import/)
       end
     end
   end
@@ -186,8 +202,11 @@ RSpec.describe Operandi::Messages do
   describe "raise_on_add behavior" do
     let(:config) { { break_on_add: false, raise_on_add: true, rollback_on_add: false } }
 
-    it "raises error when adding message" do
-      expect { messages.add(:base, "error text") }.to raise_error(Operandi::Error, "Error text")
+    it "raises RuntimeError with its service context" do
+      expect { messages.add(:base, "error text") }
+        .to raise_error(Operandi::RuntimeError, "Error text") { |error|
+          expect(error.service).to equal(service)
+        }
     end
   end
 end

@@ -219,13 +219,44 @@ Operandi defines several exception classes for different error scenarios:
 | Exception | Description |
 |-----------|-------------|
 | `Operandi::Error` | Base exception class for all Operandi errors |
-| `Operandi::ArgTypeError` | Raised when an argument or output type validation fails |
+| `Operandi::RuntimeError` | Raised while a service is running; exposes the service instance through `service` |
+| `Operandi::ArgTypeError` | Raised when type validation fails; exposes the associated service class through `service_class` |
 | `Operandi::ReservedNameError` | Raised when using a reserved name for arguments, outputs, or steps |
 | `Operandi::InvalidNameError` | Raised when using an invalid name format |
 | `Operandi::NoStepsError` | Raised when a service has no steps defined and no `run` method |
 | `Operandi::MissingTypeError` | Raised when defining an argument or output without a `type` option when `require_arg_type` or `require_output_type` is enabled |
 | `Operandi::StopExecution` | Control flow exception raised by `stop_immediately!` to halt execution without rollback |
 | `Operandi::FailExecution` | Control flow exception raised by `fail_immediately!` to halt execution and rollback transactions |
+
+### RuntimeError
+
+Runtime failures caused by service errors, warnings, or invalid step execution raise
+`Operandi::RuntimeError`. The exception inherits from `Operandi::Error` and provides
+the concrete service instance that failed:
+
+```ruby
+begin
+  MyService.run!(name: "John")
+rescue Operandi::RuntimeError => error
+  error.service # => the MyService instance
+end
+```
+
+Errors raised while defining a service continue to use `Operandi::Error`.
+
+### ArgTypeError
+
+Argument and output type failures raise `Operandi::ArgTypeError`. It inherits from
+`Operandi::Error` and identifies the associated service class without requiring a
+service instance:
+
+```ruby
+begin
+  MyService.run(name: 123)
+rescue Operandi::ArgTypeError => error
+  error.service_class # => MyService
+end
+```
 
 ### MissingTypeError
 
@@ -298,4 +329,3 @@ end
 Learn about callbacks to add logging, benchmarking, and other cross-cutting concerns to your services.
 
 [Next: Callbacks](callbacks.md)
-

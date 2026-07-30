@@ -48,7 +48,7 @@ module Operandi
     # @return [Boolean] whether to stop executing steps when an error is added
     attr_reader :break_on_error
 
-    # @return [Boolean] whether to raise Operandi::Error when service fails
+    # @return [Boolean] whether to raise Operandi::RuntimeError when service fails
     attr_reader :raise_on_error
 
     # @return [Boolean] whether to rollback the transaction when an error is added
@@ -60,7 +60,7 @@ module Operandi
     # @return [Boolean] whether to stop executing steps when a warning is added
     attr_reader :break_on_warning
 
-    # @return [Boolean] whether to raise Operandi::Error when service has warnings
+    # @return [Boolean] whether to raise Operandi::RuntimeError when service has warnings
     attr_reader :raise_on_warning
 
     # @return [Boolean] whether to rollback the transaction when a warning is added

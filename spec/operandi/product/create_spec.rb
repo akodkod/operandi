@@ -39,7 +39,7 @@ RSpec.describe Product::Create do
     let(:service) { described_class.with(raise_on_error: true).run(params: params) }
     let(:params) { {} }
 
-    it { expect { service }.to raise_error(Operandi::Error) }
+    it { expect { service }.to raise_error(Operandi::RuntimeError) }
   end
 
   context "when name is absent" do

@@ -115,7 +115,9 @@ RSpec.describe Operandi::Collection::Base do
       service = WithConditions.new
       expect do
         described_class.new(service, Operandi::CollectionTypes::ARGUMENTS, "not a hash")
-      end.to raise_error(Operandi::ArgTypeError, /must be a Hash/)
+      end.to raise_error(Operandi::ArgTypeError, /must be a Hash/) { |error|
+        expect(error.service_class).to equal(WithConditions)
+      }
     end
   end
 

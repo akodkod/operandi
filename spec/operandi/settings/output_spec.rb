@@ -26,7 +26,9 @@ RSpec.describe Operandi::Settings::Output do
     describe "with wrong type" do
       it "raises ArgTypeError when output has wrong type" do
         expect { WithTypedOutputs.run(return_wrong_type: true) }
-          .to raise_error(Operandi::ArgTypeError, /output `message` (must be|expected) String/)
+          .to raise_error(Operandi::ArgTypeError, /output `message` (must be|expected) String/) { |error|
+            expect(error.service_class).to equal(WithTypedOutputs)
+          }
       end
     end
 

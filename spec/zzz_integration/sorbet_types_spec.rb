@@ -19,9 +19,11 @@ RSpec.describe "Sorbet Runtime Types Support" do # rubocop:disable RSpec/Describ
       end
 
       context "with invalid string (integer instead of string)" do
-        it "raises ArgTypeError" do
+        it "raises ArgTypeError with the service class" do
           expect { described_class.run(name: 123, age: 25) }
-            .to raise_error(Operandi::ArgTypeError, /`name`.*expected String.*got Integer/)
+            .to raise_error(Operandi::ArgTypeError, /`name`.*expected String.*got Integer/) { |error|
+              expect(error.service_class).to equal(described_class)
+            }
         end
       end
 

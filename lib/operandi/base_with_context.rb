@@ -23,7 +23,8 @@ module Operandi
 
       return if parent_service.nil? || parent_service.is_a?(Operandi::Base)
 
-      raise Operandi::ArgTypeError, "#{parent_service.class} - must be a subclass of Operandi::Base"
+      message = "#{parent_service.class} - must be a subclass of Operandi::Base"
+      raise Operandi::ArgTypeError.new(message, service_class: @service_class)
     end
 
     # Run the service with the configured context.
@@ -38,7 +39,7 @@ module Operandi
     #
     # @param kwargs [Hash] keyword arguments matching service arguments
     # @return [Base] the executed service instance
-    # @raise [Error] if the service fails
+    # @raise [RuntimeError] if the service fails
     def run!(**kwargs)
       @config[:raise_on_error] = true
       run(**kwargs)

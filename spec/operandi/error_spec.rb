@@ -1,5 +1,68 @@
 # frozen_string_literal: true
 
+RSpec.describe Operandi::RuntimeError do
+  let(:service) { Class.new(Operandi::Base).new }
+  let(:error) { described_class.new("Something failed", service: service) }
+
+  it "inherits from Operandi::Error" do
+    expect(described_class).to be < Operandi::Error
+  end
+
+  it "preserves the error message" do
+    expect(error.message).to eq("Something failed")
+  end
+
+  it "exposes the service instance" do
+    expect(error.service).to equal(service)
+  end
+
+  it "requires a service" do
+    expect { described_class.new("Something failed") }.to raise_error(ArgumentError)
+    expect do
+      described_class.new("Something failed", service: nil)
+    end.to raise_error(ArgumentError, "service is required")
+    expect do
+      described_class.new("Something failed", service: Object.new)
+    end.to raise_error(ArgumentError, "service must be an Operandi::Base instance")
+  end
+
+  it "can still be rescued as Operandi::Error" do
+    expect { raise error }.to raise_error(Operandi::Error)
+  end
+end
+
+RSpec.describe Operandi::ArgTypeError do
+  let(:service_class) { Class.new(Operandi::Base) }
+  let(:error) { described_class.new("Invalid argument", service_class: service_class) }
+
+  it "inherits from Operandi::Error but not Operandi::RuntimeError" do
+    expect(described_class).to be < Operandi::Error
+    expect(described_class).not_to be < Operandi::RuntimeError
+  end
+
+  it "preserves the error message" do
+    expect(error.message).to eq("Invalid argument")
+  end
+
+  it "exposes the service class" do
+    expect(error.service_class).to equal(service_class)
+  end
+
+  it "requires an Operandi::Base subclass" do
+    expect { described_class.new("Invalid argument") }.to raise_error(ArgumentError)
+    expect do
+      described_class.new("Invalid argument", service_class: nil)
+    end.to raise_error(ArgumentError, "service_class is required")
+    expect do
+      described_class.new("Invalid argument", service_class: String)
+    end.to raise_error(ArgumentError, "service_class must be an Operandi::Base subclass")
+  end
+
+  it "can still be rescued as Operandi::Error" do
+    expect { raise error }.to raise_error(Operandi::Error)
+  end
+end
+
 RSpec.context Operandi::Error do
   context "with removed exception aliases" do
     it "does not define NoStepError or TwoConditions" do
@@ -18,7 +81,9 @@ RSpec.context Operandi::Error do
     end
 
     it do
-      expect { eval(class_code) }.to raise_error(Operandi::Error)
+      expect { eval(class_code) }.to raise_error(Operandi::Error) { |error|
+        expect(error).to be_an_instance_of(Operandi::Error)
+      }
     end
   end
 
@@ -32,7 +97,9 @@ RSpec.context Operandi::Error do
     end
 
     it do
-      expect { eval(class_code) }.to raise_error(described_class)
+      expect { eval(class_code) }.to raise_error(Operandi::Error) { |error|
+        expect(error).to be_an_instance_of(Operandi::Error)
+      }
     end
   end
 
@@ -54,7 +121,9 @@ RSpec.context Operandi::Error do
     end
 
     it do
-      expect { eval(class_code) }.to raise_error(described_class)
+      expect { eval(class_code) }.to raise_error(Operandi::RuntimeError) { |error|
+        expect(error.service).to be_an_instance_of(WrongCondition)
+      }
     end
   end
 
@@ -70,7 +139,9 @@ RSpec.context Operandi::Error do
     end
 
     it do
-      expect { eval(class_code) }.to raise_error(Operandi::Error)
+      expect { eval(class_code) }.to raise_error(Operandi::RuntimeError) { |error|
+        expect(error.service).to be_an_instance_of(NoStep)
+      }
     end
   end
 
@@ -93,7 +164,9 @@ RSpec.context Operandi::Error do
     end
 
     it do
-      expect { eval(class_code) }.to raise_error(described_class)
+      expect { eval(class_code) }.to raise_error(Operandi::Error) { |error|
+        expect(error).to be_an_instance_of(Operandi::Error)
+      }
     end
   end
 
@@ -113,7 +186,9 @@ RSpec.context Operandi::Error do
     end
 
     it do
-      expect { eval(class_code) }.to raise_error(described_class)
+      expect { eval(class_code) }.to raise_error(Operandi::Error) { |error|
+        expect(error).to be_an_instance_of(Operandi::Error)
+      }
     end
   end
 
@@ -136,7 +211,9 @@ RSpec.context Operandi::Error do
     end
 
     it do
-      expect { eval(class_code) }.to raise_error(described_class)
+      expect { eval(class_code) }.to raise_error(Operandi::RuntimeError) { |error|
+        expect(error.service).to be_an_instance_of(CopyErrorsFromString)
+      }
     end
   end
 
@@ -212,15 +289,18 @@ RSpec.context Operandi::Error do
     end
 
     it "raises error for nil text" do
-      expect { eval(class_code_nil) }.to raise_error(described_class, "Error must be a non-empty string")
+      expect { eval(class_code_nil) }
+        .to raise_error(Operandi::RuntimeError, "Error must be a non-empty string")
     end
 
     it "raises error for empty string" do
-      expect { eval(class_code_empty) }.to raise_error(described_class, "Error must be a non-empty string")
+      expect { eval(class_code_empty) }
+        .to raise_error(Operandi::RuntimeError, "Error must be a non-empty string")
     end
 
     it "raises error for whitespace only" do
-      expect { eval(class_code_whitespace) }.to raise_error(described_class, "Error must be a non-empty string")
+      expect { eval(class_code_whitespace) }
+        .to raise_error(Operandi::RuntimeError, "Error must be a non-empty string")
     end
   end
 end

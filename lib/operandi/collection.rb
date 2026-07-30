@@ -38,7 +38,8 @@ module Operandi
 
         return if storage.is_a?(Hash)
 
-        raise Operandi::ArgTypeError, "#{instance.class} - #{collection_type} must be a Hash"
+        message = "#{instance.class} - #{collection_type} must be a Hash"
+        raise Operandi::ArgTypeError.new(message, service_class: instance.class)
       end
 
       # Set a value in the collection.
@@ -100,6 +101,7 @@ module Operandi
 
           # validate_type! returns the validated value
           validated_value = field.validate_type!(get(name))
+
           # Store the validated value back
           set(name, validated_value) if validated_value != get(name)
         end

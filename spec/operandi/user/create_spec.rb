@@ -36,21 +36,21 @@ RSpec.describe User::Create do
     let(:service) { described_class.with(raise_on_error: true).run(params: params) }
     let(:params) { {} }
 
-    it { expect { service }.to raise_error(Operandi::Error) }
+    it { expect { service }.to raise_error(Operandi::RuntimeError) }
   end
 
   context "when params is empty (run!)" do
     let(:service) { described_class.run!(params: params) }
     let(:params) { {} }
 
-    it { expect { service }.to raise_error(Operandi::Error) }
+    it { expect { service }.to raise_error(Operandi::RuntimeError) }
   end
 
   context "when params is empty and context (run!)" do
     let(:service) { described_class.with({ raise_on_error: false }).run!(params: params) }
     let(:params) { {} }
 
-    it { expect { service }.to raise_error(Operandi::Error) }
+    it { expect { service }.to raise_error(Operandi::RuntimeError) }
   end
 
   context "when name is absent" do

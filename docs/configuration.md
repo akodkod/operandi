@@ -38,11 +38,11 @@ end
 | `use_transactions` | `true` | Wraps service execution in `ActiveRecord::Base.transaction` |
 | `load_errors` | `true` | Propagates errors to parent service when using `.with(self)` |
 | `break_on_error` | `true` | Stops executing remaining steps when an error is added |
-| `raise_on_error` | `false` | Raises `Operandi::Error` when an error is added |
+| `raise_on_error` | `false` | Raises `Operandi::RuntimeError` when an error is added |
 | `rollback_on_error` | `true` | Rolls back the transaction when an error is added |
 | `load_warnings` | `true` | Propagates warnings to parent service when using `.with(self)` |
 | `break_on_warning` | `false` | Stops executing remaining steps when a warning is added |
-| `raise_on_warning` | `false` | Raises `Operandi::Error` when a warning is added |
+| `raise_on_warning` | `false` | Raises `Operandi::RuntimeError` when a warning is added |
 | `rollback_on_warning` | `false` | Rolls back the transaction when a warning is added |
 
 ## Per-Service Configuration
@@ -216,4 +216,3 @@ When `use_transactions` is `true`, Operandi uses `ActiveRecord::Base.transaction
 Now that you understand configuration, learn about the core concepts:
 
 [Next: Concepts](concepts.md)
-

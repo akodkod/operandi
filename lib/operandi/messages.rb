@@ -52,13 +52,15 @@ module Operandi
     # Initialize a new messages collection.
     #
     # @param config [Hash] configuration options
+    # @param service [Base] service instance that owns this collection
     # @option config [Boolean] :break_on_add stop execution when message added
     # @option config [Boolean] :raise_on_add raise exception when message added
     # @option config [Boolean] :rollback_on_add rollback transaction when message added
-    def initialize(config)
+    def initialize(config = {}, service:)
       @break = false
       @config = config
       @messages = {}
+      @service = service
     end
 
     # Get total count of all messages across all keys.
@@ -76,7 +78,7 @@ module Operandi
     # @option opts [Boolean] :break override break behavior for this message
     # @option opts [Boolean] :rollback override rollback behavior for this message
     # @return [void]
-    # @raise [Error] if text is nil or empty
+    # @raise [RuntimeError, Error] if text is nil or empty
     #
     # @example Add a single error
     #   errors.add(:name, "can't be blank")
@@ -84,14 +86,14 @@ module Operandi
     # @example Add multiple errors
     #   errors.add(:email, ["is invalid", "is already taken"])
     def add(key, texts, opts = {})
-      raise Operandi::Error, "Error must be a non-empty string" unless texts
+      raise_error("Error must be a non-empty string") unless texts
 
       message = nil
 
       [*texts].each do |text|
         message = text.is_a?(Message) ? text : Message.new(key, text, opts)
 
-        raise Operandi::Error, "Error must be a non-empty string" unless valid_error_text?(message.text)
+        raise_error("Error must be a non-empty string") unless valid_error_text?(message.text)
 
         @messages[key] ||= []
         @messages[key] << message
@@ -114,7 +116,7 @@ module Operandi
     # @param entity [ActiveRecord::Base, Base, Hash, #each] source to copy from
     # @param opts [Hash] options to pass to each added message
     # @return [void]
-    # @raise [Error] if entity type is not supported
+    # @raise [RuntimeError, Error] if entity type is not supported
     #
     # @example Copy from ActiveRecord model
     #   errors.copy_from(user) # copies user.errors
@@ -133,7 +135,7 @@ module Operandi
           add(key, message, opts.merge(last: index == last_index))
         end
       else
-        raise Operandi::Error, "Don't know how to import errors from #{entity}"
+        raise_error("Don't know how to import errors from #{entity}")
       end
     end
     alias from_record copy_from
@@ -163,14 +165,19 @@ module Operandi
       return unless @config[:raise_on_add]
 
       if message.key == :base
-        raise Operandi::Error, message.text.capitalize.strip
+        raise_error(message.text.capitalize.strip)
       else
-        raise Operandi::Error, "#{message.key.to_s.capitalize} #{message.text}".strip
+        raise_error("#{message.key.to_s.capitalize} #{message.text}".strip)
       end
     end
 
+    def raise_error(message)
+      raise Operandi::RuntimeError.new(message, service: @service)
+    end
+
     def rollback!(rollback)
-      return if !defined?(ActiveRecord::Rollback) || !(rollback.nil? ? @config[:rollback_on_add] : rollback)
+      return unless defined?(ActiveRecord::Rollback)
+      return unless rollback.nil? ? @config[:rollback_on_add] : rollback
 
       raise ActiveRecord::Rollback
     end

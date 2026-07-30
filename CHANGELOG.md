@@ -4,7 +4,8 @@
 
 ### Added
 
-- ...
+- Add `Operandi::RuntimeError` with access to the failed service instance
+- Add the associated service class to `Operandi::ArgTypeError`
 
 ### Breaking changes
 

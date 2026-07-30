@@ -200,7 +200,7 @@ module Operandi
       #
       # @param kwargs [Hash] keyword arguments matching service arguments
       # @return [Base] the executed service instance
-      # @raise [Error] if the service fails
+      # @raise [RuntimeError] if the service fails
       #
       # @example
       #   MyService.run!(name: "test") # raises if service fails

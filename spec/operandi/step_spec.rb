@@ -111,9 +111,11 @@ RSpec.describe Operandi::Settings::Step do
         stub_const("TestStepService", Class.new(Operandi::Base))
       end
 
-      it "raises Error" do
+      it "raises RuntimeError with the service instance" do
         instance = TestStepService.new
-        expect { step.run(instance) }.to raise_error(Operandi::Error, /Step method .* is not defined/)
+        expect { step.run(instance) }.to raise_error(Operandi::RuntimeError, /Step method .* is not defined/) { |error|
+          expect(error.service).to equal(instance)
+        }
       end
     end
   end
