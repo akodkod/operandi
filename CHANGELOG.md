@@ -17,6 +17,9 @@
 
 - Load Operandi without relying on other gems to require `forwardable`
 - Remove formatting artifacts from plain Ruby type errors
+- Keep `run!` configuration scoped to a single context-wrapper invocation
+- Do not report `stop_immediately!` and `fail_immediately!` as step crashes
+- Do not retry a crashing step marked with `always: true`
 
 ### Breaking changes
 

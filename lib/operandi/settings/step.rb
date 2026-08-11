@@ -71,9 +71,15 @@ module Operandi
         else
           instance.run_callbacks(:on_step_success, instance, name)
         end
+      rescue Operandi::StopExecution, Operandi::FailExecution
+        raise
       rescue StandardError => e
-        instance.run_callbacks(:on_step_crash, instance, name, e)
-        raise e
+        handle_crash(instance, e)
+      end
+
+      def handle_crash(instance, error)
+        instance.run_callbacks(:on_step_crash, instance, name, error)
+        raise error
       end
 
       def run?(instance)

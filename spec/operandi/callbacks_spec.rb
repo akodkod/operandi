@@ -151,6 +151,32 @@ RSpec.describe Operandi::Callbacks do
     end
 
     describe "on_step_crash" do
+      let(:control_flow_service_class) do
+        Class.new(Operandi::Base) do
+          arg :action, type: Symbol
+
+          output :callback_log, type: Array, default: -> { [] }
+
+          on_step_crash :log_step_crash
+
+          step :halt
+
+          private
+
+          def halt
+            if action == :stop
+              stop_immediately!
+            else
+              fail_immediately!("Expected failure")
+            end
+          end
+
+          def log_step_crash(_service, step_name, _error)
+            callback_log << [:on_step_crash, step_name]
+          end
+        end
+      end
+
       context "when step raises an exception" do
         it "is called with the exception" do
           service = WithCallbacksStepException.new
@@ -168,6 +194,22 @@ RSpec.describe Operandi::Callbacks do
           service = WithCallbacksStepException.new
           expect { service.call }.to raise_error(StandardError)
           expect(service.callback_log).not_to include([:on_step_success, :raise_error])
+        end
+      end
+
+      context "when step stops execution intentionally" do
+        it "is not called for stop_immediately!" do
+          service = control_flow_service_class.run(action: :stop)
+
+          expect(service.callback_log).to be_empty
+          expect(service.stopped?).to be(true)
+        end
+
+        it "is not called for fail_immediately!" do
+          service = control_flow_service_class.with(use_transactions: false).run(action: :fail)
+
+          expect(service.callback_log).to be_empty
+          expect(service.failed?).to be(true)
         end
       end
     end
