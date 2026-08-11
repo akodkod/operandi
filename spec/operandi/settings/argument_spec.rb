@@ -51,7 +51,10 @@ RSpec.describe Operandi::Settings::Argument do
 
       it "rejects other types" do
         expect { WithMultipleTypes.run(value: 3.14) }
-          .to raise_error(Operandi::ArgTypeError, /(must be|expected) (String or Integer|T\.any)/)
+          .to raise_error(
+            Operandi::ArgTypeError,
+            "WithMultipleTypes argument `value` must be String or Integer, but got Float with value: 3.14",
+          )
       end
 
       it "rejects nil when not optional" do

@@ -6,6 +6,12 @@
 
 - Add `Operandi::RuntimeError` with access to the failed service instance
 - Add the associated service class to `Operandi::ArgTypeError`
+- Add `Operandi::Messages#full_messages`
+
+### Fixed
+
+- Load Operandi without relying on other gems to require `forwardable`
+- Remove formatting artifacts from plain Ruby type errors
 
 ### Breaking changes
 
