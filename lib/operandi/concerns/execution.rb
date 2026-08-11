@@ -35,7 +35,7 @@ module Operandi
           @cached_steps = self.class.steps
 
           @cached_steps.each do |name, step|
-            @launched_steps << name if step.run(self)
+            launch_step(name, step)
 
             break if @errors.break? || @warnings.break?
           end
@@ -56,8 +56,15 @@ module Operandi
         steps_to_check.each do |name, step|
           next if !step.always || @launched_steps.include?(name)
 
-          @launched_steps << name if step.run(self)
+          launch_step(name, step)
         end
+      end
+
+      def launch_step(name, step)
+        @launched_steps << name if step.run(self)
+      rescue StandardError
+        @launched_steps << name if step.always
+        raise
       end
 
       # Load defaults for outputs and arguments, then validate arguments

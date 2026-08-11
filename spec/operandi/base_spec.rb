@@ -332,6 +332,38 @@ RSpec.describe Operandi::Base do
         expect(service.always_step_ran).to be(true)
       end
     end
+
+    context "when an always step raises an exception" do
+      let(:service_class) do
+        Class.new(Operandi::Base) do
+          output :attempts, type: Integer, default: 0
+          output :crash_count, type: Integer, default: 0
+
+          on_step_crash :count_crash
+
+          step :raise_error, always: true
+
+          private
+
+          def raise_error
+            self.attempts += 1
+            raise StandardError, "Always step exploded!"
+          end
+
+          def count_crash(_service, _step_name, _error)
+            self.crash_count += 1
+          end
+        end
+      end
+
+      it "runs the step and its crash callback only once" do
+        service = service_class.new
+
+        expect { service.call }.to raise_error(StandardError, "Always step exploded!")
+        expect(service.attempts).to eq(1)
+        expect(service.crash_count).to eq(1)
+      end
+    end
   end
 
   describe ".run" do
@@ -364,6 +396,15 @@ RSpec.describe Operandi::Base do
       it "applies config to service" do
         service = WithConditions.with(use_transactions: false).run(fake_error: true)
         expect(service.failed?).to be(true)
+      end
+    end
+
+    context "when reusing a context after run!" do
+      it "does not enable raise_on_error for later runs" do
+        context = WithConditions.with(use_transactions: false)
+
+        expect { context.run!(fake_error: true) }.to raise_error(Operandi::RuntimeError)
+        expect { context.run(fake_error: true) }.not_to raise_error
       end
     end
 

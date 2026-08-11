@@ -40,9 +40,9 @@ module Operandi
     # @param kwargs [Hash] keyword arguments matching service arguments
     # @return [Base] the executed service instance
     # @raise [RuntimeError] if the service fails
-    def run!(**)
-      @config[:raise_on_error] = true
-      run(**)
+    def run!(**kwargs)
+      config = @config.merge(raise_on_error: true)
+      @service_class.new(extend_arguments(kwargs), config, @parent_service).tap(&:call)
     end
 
     private
