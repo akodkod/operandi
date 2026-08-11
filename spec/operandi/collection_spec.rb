@@ -105,6 +105,56 @@ RSpec.describe Operandi::Collection::Base do
     end
   end
 
+  describe "#load_defaults with nil_as_default" do
+    context "when nil_as_default is false (default)" do
+      it "keeps nil when optional argument has a default" do
+        klass = Class.new(ApplicationService) do
+          config nil_as_default: false
+          arg :title, type: String, optional: true, default: "default_title"
+          step :noop
+          private
+          def noop; end
+        end
+        service = klass.run(title: nil)
+        expect(service.title).to be_nil
+      end
+    end
+
+    context "when nil_as_default is true" do
+      it "replaces nil with static default" do
+        service = WithNilAsDefault.run(name: nil)
+        expect(service.name).to eq("default_name")
+      end
+
+      it "replaces nil with default for optional argument" do
+        service = WithNilAsDefault.run(title: nil)
+        expect(service.title).to eq("default_title")
+      end
+
+      it "keeps nil when no default is defined" do
+        service = WithNilAsDefault.run(description: nil)
+        expect(service.description).to be_nil
+      end
+
+      it "does not replace non-nil values" do
+        service = WithNilAsDefault.run(name: "custom")
+        expect(service.name).to eq("custom")
+      end
+
+      it "applies default when argument is not passed" do
+        service = WithNilAsDefault.run
+        expect(service.name).to eq("default_name")
+      end
+    end
+
+    context "with runtime config override" do
+      it "respects nil_as_default via .with" do
+        service = WithConditions.with(nil_as_default: true, use_transactions: false).run(add_c: nil)
+        expect(service.add_c).to be(false)
+      end
+    end
+  end
+
   describe "initialization with non-Hash" do
     it "raises ArgumentError when passing positional argument to run" do
       # With **kwargs, Ruby raises ArgumentError for positional arguments
