@@ -399,7 +399,7 @@ RSpec.describe RuboCop::Cop::Operandi::PreferFailMethod, :config do
   end
 
   context "when errors is called on a different object" do
-    let(:ruby_version) { 3.1 }
+    let(:ruby_version) { 3.2 }
 
     it "does not register an offense for other_object.errors.add(:base, message)" do
       expect_no_offenses(<<~RUBY)

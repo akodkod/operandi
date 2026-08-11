@@ -6,6 +6,7 @@
 /doc/
 /pkg/
 /spec/reports/
+/sorbet/cache/
 /tmp/
 /.idea/
 
@@ -22,4 +23,3 @@
 
 # Ignore mac files
 *.DS_Store
-
