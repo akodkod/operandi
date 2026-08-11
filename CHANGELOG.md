@@ -7,6 +7,11 @@
 - Add `Operandi::RuntimeError` with access to the failed service instance
 - Add the associated service class to `Operandi::ArgTypeError`
 - Add `Operandi::Messages#full_messages`
+- Add Ruby 4.0 support
+
+### Changed
+
+- Reduce the published gem to runtime and user-facing support files
 
 ### Fixed
 
@@ -16,6 +21,7 @@
 ### Breaking changes
 
 - Remove deprecated methods: `done!`, `done?`, `arguments` and `outputs` methods
+- Drop Ruby 3.1 support; Ruby 3.2 or later is now required
 
 ## 4.0.0 (2026-01-01)
 

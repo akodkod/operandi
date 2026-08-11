@@ -24,6 +24,8 @@ Operandi is a simple yet powerful way to organize business logic in Ruby applica
 
 ## Installation
 
+Operandi requires Ruby 3.2 or later.
+
 ```ruby
 gem "operandi", "~> 5.0"
 ```

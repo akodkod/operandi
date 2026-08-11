@@ -127,7 +127,7 @@ end
 ## Configuration
 
 ### RuboCop Rules
-- Target Ruby version: 2.7+
+- Target Ruby version: 3.2+
 - Method length max: 20 lines
 - Uses double quotes for strings
 - Enables trailing commas for multiline structures
