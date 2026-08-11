@@ -123,8 +123,8 @@ module Operandi
 
       def type_error_message(value)
         expected_types = [*@type].map(&:to_s).join(" or ")
-        "#{@service_class} #{@field_type} `#{@name}` must be #{expected_types}, \" \\
-            \"but got #{value.class} with value: #{value.inspect}"
+        "#{@service_class} #{@field_type} `#{@name}` must be #{expected_types}, " \
+          "but got #{value.class} with value: #{value.inspect}"
       end
 
       def define_methods

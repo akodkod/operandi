@@ -106,6 +106,19 @@ RSpec.describe Operandi::Messages do
     end
   end
 
+  describe "#full_messages" do
+    it "returns capitalized base messages and humanized attribute messages" do
+      messages.add(:base, "request failed")
+      messages.add(:first_name, "can't be blank")
+
+      expect(messages.full_messages).to eq(["Request failed", "First name can't be blank"])
+    end
+
+    it "returns an empty array when there are no messages" do
+      expect(messages.full_messages).to eq([])
+    end
+  end
+
   describe "#copy_from" do
     context "with Operandi::Base object" do
       it "copies errors from service" do

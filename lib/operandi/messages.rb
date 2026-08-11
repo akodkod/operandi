@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "forwardable"
+
 module Operandi
   # Collection of error or warning messages, organized by key.
   #
@@ -145,6 +147,21 @@ module Operandi
     # @return [Hash{Symbol => Array<String>}] messages as hash
     def to_h
       @messages.to_h.transform_values { |value| value.map(&:to_s) }
+    end
+
+    # Convert messages to human-readable strings.
+    #
+    # @return [Array<String>] fully formatted messages
+    def full_messages
+      @messages.flat_map do |key, messages|
+        messages.map do |message|
+          if key == :base
+            message.to_s.capitalize
+          else
+            "#{key.to_s.tr('_', ' ').capitalize} #{message}"
+          end
+        end
+      end
     end
 
     private

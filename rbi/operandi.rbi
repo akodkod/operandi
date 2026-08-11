@@ -162,6 +162,9 @@ module Operandi
 
     sig { returns(T::Hash[Symbol, T::Array[String]]) }
     def to_h; end
+
+    sig { returns(T::Array[String]) }
+    def full_messages; end
   end
 
   module Collection
