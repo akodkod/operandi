@@ -34,6 +34,7 @@ module Operandi
         #   output :metadata, type: Hash, default: -> { {} }
         def output(name, opts = {})
           Validation.validate_symbol_name!(name, :output, self)
+          OptionsValidation.validate!(name, :output, self, opts)
           Validation.validate_reserved_name!(name, :output, self)
           Validation.validate_name_conflicts!(name, :output, self)
           Validation.validate_type_required!(name, :output, self, opts)

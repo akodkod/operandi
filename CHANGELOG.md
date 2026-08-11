@@ -20,6 +20,9 @@
 - Keep `run!` configuration scoped to a single context-wrapper invocation
 - Do not report `stop_immediately!` and `fail_immediately!` as step crashes
 - Do not retry a crashing step marked with `always: true`
+- Generate keyword-compatible service specs and update positional-hash documentation examples
+- Validate all message texts before adding any and reject empty arrays consistently
+- Reject unknown `arg`, `output`, and `step` options
 
 ### Breaking changes
 

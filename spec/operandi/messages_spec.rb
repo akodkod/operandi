@@ -57,6 +57,22 @@ RSpec.describe Operandi::Messages do
           .to raise_error(Operandi::RuntimeError, "Error must be a non-empty string")
       end
     end
+
+    context "when texts is an empty array" do
+      it "raises an error without adding a message" do
+        expect { messages.add(:base, []) }
+          .to raise_error(Operandi::RuntimeError, "Error must be a non-empty string")
+        expect(messages).to be_empty
+      end
+    end
+
+    context "when one of multiple texts is invalid" do
+      it "does not add any of the texts" do
+        expect { messages.add(:base, ["valid error", ""]) }
+          .to raise_error(Operandi::RuntimeError, "Error must be a non-empty string")
+        expect(messages).to be_empty
+      end
+    end
   end
 
   describe "#break?" do

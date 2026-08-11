@@ -199,7 +199,7 @@ end
 Operandi provides convenient methods to check error/warning states:
 
 ```ruby
-service = MyService.run(args)
+service = MyService.run(**args)
 
 # Check if service has any errors
 service.failed?   # => true/false

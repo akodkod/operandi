@@ -1,6 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe Operandi::Settings::Step do
+  describe "option validation" do
+    it "rejects unknown options" do
+      expect do
+        Class.new(Operandi::Base) do
+          step :process, alway: true
+        end
+      end.to raise_error(Operandi::Error, /Unknown option `alway`.*Valid options:.*`always`/)
+    end
+  end
+
   describe "step ordering" do
     describe "with before: option" do
       let(:service) { WithStepInsertion.run }

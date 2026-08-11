@@ -9,7 +9,7 @@ Without a helper, controller actions become repetitive:
 ```ruby
 class PostsController < ApplicationController
   def create
-    service = Post::Create.run(service_args(attributes: params[:post]))
+    service = Post::Create.run(**service_args(attributes: params[:post]))
 
     if service.success?
       render json: service.post, status: :created
@@ -19,7 +19,7 @@ class PostsController < ApplicationController
   end
 
   def update
-    service = Post::Update.run(service_args(record: @post, attributes: params[:post]))
+    service = Post::Update.run(**service_args(record: @post, attributes: params[:post]))
 
     if service.success?
       render json: service.post
@@ -72,16 +72,16 @@ end
 ```ruby
 class PostsController < ApplicationController
   def create
-    render_service Post::Create.run(service_args(attributes: params[:post])), 
+    render_service Post::Create.run(**service_args(attributes: params[:post])),
                    success_status: :created
   end
 
   def update
-    render_service Post::Update.run(service_args(record: @post))
+    render_service Post::Update.run(**service_args(record: @post))
   end
 
   def destroy
-    render_service Post::Destroy.run(service_args(record: @post))
+    render_service Post::Destroy.run(**service_args(record: @post))
   end
 end
 ```
@@ -141,7 +141,7 @@ end
 ```ruby
 class PostsController < ApplicationController
   def create
-    service = Post::Create.run(service_args(attributes: params[:post]))
+    service = Post::Create.run(**service_args(attributes: params[:post]))
     
     render_service service,
                    success_status: :created,
@@ -149,7 +149,7 @@ class PostsController < ApplicationController
   end
 
   def bulk_create
-    service = Post::BulkCreate.run(service_args(items: params[:posts]))
+    service = Post::BulkCreate.run(**service_args(items: params[:posts]))
     
     render_service service,
                    success_status: :created,
@@ -183,7 +183,7 @@ end
 ```ruby
 class PostsController < ApplicationController
   def show
-    service = Post::Find.run(service_args(id: params[:id]))
+    service = Post::Find.run(**service_args(id: params[:id]))
     render_service service, serializer: PostSerializer
   end
 end

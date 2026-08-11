@@ -38,6 +38,7 @@ module Operandi
         #   arg :current_user, type: User, context: true
         def arg(name, opts = {})
           Validation.validate_symbol_name!(name, :argument, self)
+          OptionsValidation.validate!(name, :argument, self, opts)
           Validation.validate_reserved_name!(name, :argument, self)
           Validation.validate_name_conflicts!(name, :argument, self)
           Validation.validate_type_required!(name, :argument, self, opts)

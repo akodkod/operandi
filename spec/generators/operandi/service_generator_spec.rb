@@ -246,7 +246,7 @@ RSpec.describe "Operandi::Generators::ServiceGenerator" do
       )
 
       expect(content).to include('describe "#run"')
-      expect(content).to include("subject(:service) { described_class.run(args) }")
+      expect(content).to include("subject(:service) { described_class.run(**args) }")
     end
 
     it "generates namespaced spec" do

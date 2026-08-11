@@ -4,6 +4,35 @@ require_relative "../constants"
 
 module Operandi
   module Dsl
+    # Validates options accepted by argument, output, and step declarations
+    module OptionsValidation
+      VALID_OPTIONS = {
+        argument: [:type, :optional, :default, :context].freeze,
+        output: [:type, :optional, :default].freeze,
+        step: [:if, :unless, :always, :before, :after, :parent].freeze,
+      }.freeze
+
+      # Validate that only supported DSL options are provided
+      #
+      # @param name [Symbol] the argument, output, or step name
+      # @param field_type [Symbol] the DSL type (:argument, :output, or :step)
+      # @param service_class [Class] the service class for error messages
+      # @param opts [Hash] the options hash to validate
+      def self.validate!(name, field_type, service_class, opts)
+        valid_options = VALID_OPTIONS.fetch(field_type)
+        unknown_options = opts.keys - valid_options
+        return if unknown_options.empty?
+
+        option_label = unknown_options.one? ? "option" : "options"
+        formatted_unknown = unknown_options.map { |option| "`#{option}`" }.join(", ")
+        formatted_valid = valid_options.map { |option| "`#{option}`" }.join(", ")
+
+        raise Operandi::Error,
+              "Unknown #{option_label} #{formatted_unknown} for #{field_type} `#{name}` in #{service_class}. " \
+              "Valid options: #{formatted_valid}"
+      end
+    end
+
     # Shared validation logic for DSL modules
     module Validation
       # Validate that the name is a symbol

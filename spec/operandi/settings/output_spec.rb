@@ -1,6 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe Operandi::Settings::Output do
+  describe "option validation" do
+    it "rejects unknown options" do
+      expect do
+        Class.new(Operandi::Base) do
+          output :result, type: Hash, defualt: {}
+        end
+      end.to raise_error(Operandi::Error, /Unknown option `defualt`.*Valid options:.*`default`/)
+    end
+  end
+
   describe "type validation" do
     describe "with Class type" do
       it "accepts instances of the class" do

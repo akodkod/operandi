@@ -78,11 +78,8 @@ end
 Override configuration for a single service call:
 
 ```ruby
-# Pass config as second argument to run
-MyService.run({ name: "John" }, { raise_on_error: true })
-
-# Or use with() for context-based calls
-MyService.with({ raise_on_error: true }).run(name: "John")
+# Pass runtime configuration with with()
+MyService.with(raise_on_error: true).run(name: "John")
 
 # Combine with parent service context
 ChildService
@@ -96,7 +93,7 @@ Configuration is merged in this order (later overrides earlier):
 
 1. Global configuration (from initializer)
 2. Per-service configuration (from `config` class method)
-3. Per-call configuration (from `run` or `with` arguments)
+3. Per-call configuration (from `with` arguments)
 
 ```ruby
 # Global: raise_on_error = false
@@ -110,7 +107,7 @@ class MyService < ApplicationService
 end
 
 # Per-call: raise_on_error = false (overrides per-service)
-MyService.run(args, { raise_on_error: false })
+MyService.with(raise_on_error: false).run(**args)
 ```
 
 ## Common Configuration Patterns
