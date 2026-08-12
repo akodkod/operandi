@@ -29,7 +29,7 @@ RSpec.describe <%= class_name %>, type: :service do
 
 <% end -%>
   describe "#run" do
-    subject(:service) { described_class.run(args) }
+    subject(:service) { described_class.run(**args) }
 
     let(:args) { {} }
 

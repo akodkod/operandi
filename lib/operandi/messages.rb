@@ -88,18 +88,11 @@ module Operandi
     # @example Add multiple errors
     #   errors.add(:email, ["is invalid", "is already taken"])
     def add(key, texts, opts = {})
-      raise_error("Error must be a non-empty string") unless texts
+      new_messages = build_messages(key, texts, opts)
 
-      message = nil
-
-      [*texts].each do |text|
-        message = text.is_a?(Message) ? text : Message.new(key, text, opts)
-
-        raise_error("Error must be a non-empty string") unless valid_error_text?(message.text)
-
-        @messages[key] ||= []
-        @messages[key] << message
-      end
+      @messages[key] ||= []
+      @messages[key].concat(new_messages)
+      message = new_messages.last
 
       raise!(message)
       break!(opts.key?(:break) ? opts[:break] : message.break?)
@@ -165,6 +158,15 @@ module Operandi
     end
 
     private
+
+    def build_messages(key, texts, opts)
+      messages = [*texts].map { |text| text.is_a?(Message) ? text : Message.new(key, text, opts) }
+      valid = messages.any? && messages.all? { |message| valid_error_text?(message.text) }
+
+      raise_error("Error must be a non-empty string") unless valid
+
+      messages
+    end
 
     def valid_error_text?(text)
       return false unless text.is_a?(String)

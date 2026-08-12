@@ -119,7 +119,7 @@ service = GreetService.run!(name: "John")
 This is equivalent to:
 
 ```ruby
-service = GreetService.run({ name: "John" }, { raise_on_error: true })
+service = GreetService.with(raise_on_error: true).run(name: "John")
 ```
 
 {% hint style="info" %}

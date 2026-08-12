@@ -92,12 +92,12 @@ Now we can refactor our controller:
 ```ruby
 class PostsController < ApplicationController
   def index
-    service = Post::FindAll.run(service_args)
+    service = Post::FindAll.run(**service_args)
     render json: service.posts
   end
 
   def create
-    service = Post::Create.run(service_args(attributes: params[:post]))
+    service = Post::Create.run(**service_args(attributes: params[:post]))
 
     if service.success?
       render json: service.post
@@ -107,7 +107,7 @@ class PostsController < ApplicationController
   end
 
   def unpublish
-    service = Post::Unpublish.run(service_args(id: params[:id]))
+    service = Post::Unpublish.run(**service_args(id: params[:id]))
 
     if service.success?
       render json: service.post

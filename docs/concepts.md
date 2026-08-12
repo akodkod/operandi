@@ -4,11 +4,11 @@ This section covers the core concepts of Operandi: **Arguments**, **Steps**, **O
 
 ## Service Execution Flow
 
-When you call `MyService.run(args)`, the following happens:
+When you call `MyService.run(**args)`, the following happens:
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                      Service.run(args)                       │
+│                     Service.run(**args)                      │
 ├──────────────────────────────────────────────────────────────┤
 │  1. Load default values for arguments and outputs            │
 │  2. Validate argument types                                  │

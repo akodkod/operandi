@@ -21,6 +21,7 @@ module Operandi
         # @option opts [Boolean] :always (false) Run step even after errors/warnings
         # @option opts [Symbol] :before Insert this step before the specified step
         # @option opts [Symbol] :after Insert this step after the specified step
+        # @option opts [Boolean] :parent Mark the step method as inherited for static analysis
         #
         # @example Define a simple step
         #   step :validate_input
@@ -40,6 +41,7 @@ module Operandi
         #   step :premium_feature, if: -> { user.premium? && feature_enabled? }
         def step(name, opts = {}) # rubocop:disable Metrics/MethodLength
           Validation.validate_symbol_name!(name, :step, self)
+          OptionsValidation.validate!(name, :step, self, opts)
           Validation.validate_reserved_name!(name, :step, self)
           Validation.validate_name_conflicts!(name, :step, self)
           validate_step_opts!(name, opts)

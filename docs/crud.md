@@ -391,7 +391,7 @@ module CRUDControllers
         service_class = default_class
       end
 
-      service_class.run(service_args(args))
+      service_class.run(**service_args(args))
     end
   end
 end
@@ -498,7 +498,7 @@ module CRUDServices
 
       service_class
         .with(self)
-        .run(args)
+        .run(**args)
         .public_send(resource_name(klass, plural: opts[:plural_output]))
     end
   end

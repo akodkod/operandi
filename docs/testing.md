@@ -208,7 +208,7 @@ RSpec.describe MyService do
   describe "with raise_on_error config" do
     it "raises exception when configured" do
       expect {
-        described_class.run({ invalid: true }, { raise_on_error: true })
+        described_class.with(raise_on_error: true).run(invalid: true)
       }.to raise_error(Operandi::RuntimeError)
     end
 
