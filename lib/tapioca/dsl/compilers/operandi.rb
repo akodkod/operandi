@@ -106,12 +106,12 @@ module Tapioca
             generate_outputs_type(klass)
 
             # Generate argument methods
-            constant.arguments.each_value do |field|
+            constant.own_arguments.each_value do |field|
               generate_field_methods(klass, field)
             end
 
             # Generate output methods
-            constant.outputs.each_value do |field|
+            constant.own_outputs.each_value do |field|
               generate_field_methods(klass, field)
             end
           end

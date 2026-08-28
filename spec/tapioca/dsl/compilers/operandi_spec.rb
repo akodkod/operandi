@@ -512,13 +512,29 @@ RSpec.describe Tapioca::Dsl::Compilers::Operandi do
             "ParentService"
           end
 
-          arg :parent_arg, type: String
+          arg :current_user, type: User, optional: true
+        end
+      end
+
+      let(:authenticated_service) do
+        parent = parent_service
+        Class.new(parent) do
+          def self.name
+            "AuthenticatedService"
+          end
+
+          extend T::Sig
+
+          sig { returns(User) }
+          def current_user
+            super || User.new
+          end
         end
       end
 
       let(:service_class) do
-        parent = parent_service
-        Class.new(parent) do
+        authenticated = authenticated_service
+        Class.new(authenticated) do
           def self.name
             "ChildService"
           end
@@ -527,11 +543,49 @@ RSpec.describe Tapioca::Dsl::Compilers::Operandi do
         end
       end
 
-      it "generates methods for both parent and child arguments" do
+      it "generates the argument methods only where the argument is declared" do
+        parent_scope = described_class.new(parent_service, RBI::Tree.new).decorate
+        authenticated_scope = described_class.new(authenticated_service, RBI::Tree.new).decorate
+        child_scope = compiler.decorate
+
+        expect(find_method(parent_scope, "current_user").return_type).to eq("T.nilable(::User)")
+        expect(find_method(authenticated_scope, "current_user")).to be_nil
+        expect(find_method(child_scope, "current_user")).to be_nil
+        expect(find_method(child_scope, "child_arg")).not_to be_nil
+      end
+
+      it "keeps inherited arguments in the child run signature" do
+        scope = compiler.decorate
+        run_method = find_method(scope, "run")
+        current_user_param = run_method.parameters.find { |param| param.name == "current_user" }
+
+        expect(current_user_param.type).to eq("T.nilable(::User)")
+      end
+    end
+
+    context "with inherited outputs" do
+      let(:parent_service) do
+        Class.new(Operandi::Base) do
+          output :result, type: String
+        end
+      end
+
+      let(:service_class) do
+        parent = parent_service
+        Class.new(parent) do
+          def self.name
+            "ChildWithInheritedOutputService"
+          end
+
+          output :child_result, type: Integer
+        end
+      end
+
+      it "does not redeclare inherited output methods in the child" do
         scope = compiler.decorate
 
-        expect(find_method(scope, "parent_arg")).not_to be_nil
-        expect(find_method(scope, "child_arg")).not_to be_nil
+        expect(find_method(scope, "result")).to be_nil
+        expect(find_method(scope, "child_result")).not_to be_nil
       end
     end
   end
