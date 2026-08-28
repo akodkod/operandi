@@ -23,6 +23,7 @@
 - Generate keyword-compatible service specs and update positional-hash documentation examples
 - Validate all message texts before adding any and reject empty arrays consistently
 - Reject unknown `arg`, `output`, and `step` options
+- Preserve narrowed Sorbet method overrides in subclasses of services with inherited arguments or outputs
 
 ### Breaking changes
 

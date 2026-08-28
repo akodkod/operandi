@@ -167,7 +167,9 @@ For each `arg` or `output`, three methods are generated:
 
 ## Inheritance
 
-The compiler handles inherited arguments and outputs. If a child service inherits from a parent, the RBI will include methods for both parent and child fields.
+The compiler emits argument and output methods only on the service where each field is declared. Child services inherit those methods normally, while their generated `Arguments` and `Outputs` types and `.run` signatures still include inherited fields.
+
+This preserves method overrides that narrow an inherited field's type. For example, a base service can declare an optional `current_user` argument and an authenticated subclass can override its getter to return a non-nilable `User`; descendants will inherit the narrowed return type instead of having the optional DSL signature redeclared.
 
 ## Troubleshooting
 
