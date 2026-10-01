@@ -134,6 +134,7 @@ RSpec.describe Operandi::Config do
         rollback_on_warning: false,
         require_arg_type: true,
         require_output_type: true,
+        nil_as_default: false,
         ruby_lsp_type_mappings: {}.freeze,
       })
     end

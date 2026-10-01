@@ -83,7 +83,8 @@ module Operandi
       # @return [void]
       def load_defaults
         settings_collection.each do |name, settings|
-          next if !settings.default_exists || key?(name)
+          next unless settings.default_exists
+          next if key?(name) && !(get(name).nil? && nil_as_default?)
 
           if settings.default.is_a?(Proc)
             set(name, @instance.instance_exec(&settings.default))
@@ -148,6 +149,10 @@ module Operandi
       end
 
       private
+
+      def nil_as_default?
+        @instance.instance_variable_get(:@config)&.fetch(:nil_as_default, false)
+      end
 
       def validate_collection_type!(type)
         return if CollectionTypes::ALL.include?(type)

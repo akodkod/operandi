@@ -66,6 +66,9 @@ module Operandi
     # @return [Boolean] whether to rollback the transaction when a warning is added
     attr_reader :rollback_on_warning
 
+    # @return [Boolean] whether to replace nil argument values with their defaults
+    attr_reader :nil_as_default
+
     # @return [Hash{String => String}] custom type mappings for Ruby LSP addon.
     #   Maps custom types to Ruby types for hover/completion.
     #   @example { "CustomTypes::UUID" => "String", "CustomTypes::Money" => "BigDecimal" }
@@ -85,6 +88,8 @@ module Operandi
       break_on_warning: false,
       raise_on_warning: false,
       rollback_on_warning: false,
+
+      nil_as_default: false,
 
       ruby_lsp_type_mappings: {}.freeze,
     }.freeze
