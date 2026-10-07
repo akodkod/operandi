@@ -123,6 +123,23 @@ RSpec.describe RuboCop::Cop::Operandi::ReservedName, :config do
     end
   end
 
+  describe "internal lifecycle names" do
+    names = [:run_steps, :within_transaction, :execute_callback]
+    { arg: "an argument", output: "an output", step: "a step" }.each do |declaration, label|
+      names.each do |name|
+        it "rejects #{name} in #{declaration} declarations" do
+          source = "#{declaration} :#{name}"
+          expect_offense(<<~RUBY)
+            class MyService < ApplicationService
+              #{source}
+              #{'^' * source.length} Operandi/ReservedName: `#{name}` is a reserved name and cannot be used as #{label}. It conflicts with Operandi methods.
+            end
+          RUBY
+        end
+      end
+    end
+  end
+
   describe "valid non-reserved names" do
     it "does not register an offense for non-reserved argument names" do
       expect_no_offenses(<<~RUBY)

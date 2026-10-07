@@ -4,6 +4,9 @@
 
 ### Added
 
+- Reserve internal lifecycle and callback method names consistently in DSL declarations and RuboCop checks
+- Add `Operandi/ReservedMethodName` to prevent overriding framework instance methods such as `call`, while allowing the supported `run` entry point
+- Add RuboCop cop `SectionComments` to require `# Arguments`, `# Steps`, and `# Outputs` section comments. Disabled by default
 - Add `Operandi::RuntimeError` with access to the failed service instance
 - Add the associated service class to `Operandi::ArgTypeError`
 - Add `Operandi::Messages#full_messages`

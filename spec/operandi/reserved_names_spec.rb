@@ -16,6 +16,29 @@ RSpec.describe "Reserved Names Validation" do # rubocop:disable RSpec/DescribeCl
         :stopped?,
         :stop_immediately!,
         :call,
+        :initialize,
+        :successful?,
+        :fail!,
+        :fail_immediately!,
+      )
+    end
+
+    it "includes internal execution and callback methods" do
+      expect(Operandi::ReservedNames::BASE_METHODS).to include(
+        :execute_service,
+        :run_service_result_callbacks,
+        :run_steps,
+        :run_steps_with_always,
+        :launch_step,
+        :load_defaults_and_validate,
+        :within_transaction,
+        :initialize_errors,
+        :initialize_warnings,
+        :copy_errors_to_parent_service,
+        :copy_warnings_to_parent_service,
+        :run_simple_callbacks,
+        :run_around_callbacks,
+        :execute_callback,
       )
     end
 
@@ -56,6 +79,21 @@ RSpec.describe "Reserved Names Validation" do # rubocop:disable RSpec/DescribeCl
       expect(all_names).to include(:before_step_run)
       expect(all_names).to include(:initialize)
       expect(all_names).not_to include(:arguments, :outputs)
+    end
+  end
+
+  describe "internal method name validation" do
+    names = [:run_steps, :within_transaction, :execute_callback, :successful?, :fail!]
+    names.product([:arg, :output, :step]).each do |name, declaration|
+      it "rejects #{name} as a #{declaration}" do
+        expect do
+          Class.new(Operandi::Base).public_send(declaration, name)
+        end.to raise_error(Operandi::ReservedNameError, /reserved word/)
+      end
+    end
+
+    it "allows run as a step name" do
+      expect { Class.new(Operandi::Base).step(:run) }.not_to raise_error
     end
   end
 

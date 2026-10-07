@@ -148,6 +148,45 @@ class MyService < ApplicationService
 end
 ```
 
+### Operandi/SectionComments
+
+Requires section comments above DSL groups, in this order: `# Arguments`, `# Steps`, `# Outputs`. Section comments are optional when a class has only one `arg`, `step`, or `output` declaration in total. With two or more declarations, even of different kinds, headings are required. A section is omitted when that group is not declared. `config` does not use a section comment. Disabled by default.
+
+```ruby
+# bad
+class MyService < ApplicationService
+  arg :user, type: User
+  step :process
+  output :result, type: Hash
+end
+
+# good
+class MyService < ApplicationService
+  # Arguments
+  arg :user, type: User
+
+  # Steps
+  step :process
+
+  # Outputs
+  output :result, type: Hash
+end
+
+# good - a single declaration needs no heading
+class MyService < ApplicationService
+  step :process
+end
+```
+
+The heading must be aligned with the declaration. Descriptive comment lines may appear between the heading and declaration, with no blank lines or code between them. Contiguous declarations of the same kind share one heading. A later group of an earlier kind is reported as an order offense and is not autocorrected. Missing or incorrect headings are autocorrected. Descriptive comments are preserved; only recognized section headings (such as `# Args`) are replaced.
+
+**Configuration:** Enable the cop in `.rubocop.yml`:
+
+```yaml
+Operandi/SectionComments:
+  Enabled: true
+```
+
 ### Operandi/MissingPrivateKeyword
 
 Ensures step methods are defined as private.
@@ -384,6 +423,9 @@ Operandi/ConditionMethodExists:
 Operandi/DslOrder:
   Enabled: true
 
+Operandi/SectionComments:
+  Enabled: false
+
 Operandi/MissingPrivateKeyword:
   Enabled: true
 
@@ -428,3 +470,43 @@ Operandi/ArgumentTypeRequired:
 Learn more about testing your services:
 
 [Next: Testing](testing.md)
+
+### Operandi/ReservedMethodName
+
+Prevents instance methods from overriding Operandi's lifecycle and state methods,
+including `call`, `initialize`, `load_defaults_and_validate`, `run_steps`, and
+`run_callbacks`. Overriding these can bypass defaults, validation, transactions,
+and callbacks. Use an instance `run` method for a service with no declared steps,
+or define named steps. `run` is not an additional step when other steps exist.
+
+```ruby
+# bad
+class FetchTickets < ApplicationService
+  def call
+    # Bypasses Operandi's lifecycle
+  end
+end
+
+# good
+class FetchTickets < ApplicationService
+  def run
+    # Runs inside Operandi's lifecycle
+  end
+end
+```
+
+Enabled by default. Checks subclasses of `Operandi::Base` and `ApplicationService`,
+including inheritance resolved within the same file. For custom base classes
+defined elsewhere, add their names to `ServiceBaseClasses`:
+
+```yaml
+Operandi/ReservedMethodName:
+  ServiceBaseClasses:
+    - Operandi::Base
+    - ApplicationService
+    - MyApp::BaseService
+```
+
+Class methods, singleton methods, and unrelated classes are ignored. This cop
+does not autocorrect: renaming `call` to `run` is only appropriate when no other
+steps are declared.

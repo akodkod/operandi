@@ -1,57 +1,68 @@
 Operandi/ArgumentTypeRequired:
   Enabled: true
-  Description: "Requires a `type:` option for all arguments."
+  Description: "Requires a `type:` option for all arguments"
 
 Operandi/DeprecatedAccessors:
   Enabled: true
-  Description: "Detects deprecated `arguments` and `outputs` accessors."
+  Description: "Detects deprecated `arguments` and `outputs` accessors"
 
 Operandi/ConditionMethodExists:
   Enabled: true
-  Description: "Ensures condition methods referenced in `if:` or `unless:` exist."
+  Description: "Ensures condition methods referenced in `if:` or `unless:` exist"
 
 Operandi/DeprecatedMethods:
   Enabled: true
-  Description: "Detects usage of deprecated Operandi methods."
+  Description: "Detects usage of deprecated Operandi methods"
 
 Operandi/DslOrder:
   Enabled: true
-  Description: "Enforces the order of DSL methods in Operandi services."
+  Description: "Enforces the order of DSL methods in Operandi services"
 
 Operandi/MissingPrivateKeyword:
   Enabled: true
-  Description: "Ensures `private` keyword is present in Operandi services."
+  Description: "Ensures `private` keyword is present in Operandi services"
 
 Operandi/NoDirectInstantiation:
   Enabled: true
-  Description: "Detects direct instantiation of Operandi services."
+  Description: "Detects direct instantiation of Operandi services"
 
 Operandi/NoHashArgument:
   Enabled: false
-  Description: "Detects hash arguments passed to `.run` or `.run!` instead of keyword arguments."
+  Description: "Detects hash arguments passed to `.run` or `.run!` instead of keyword arguments"
   ServicePattern: ~
 
 Operandi/OutputTypeRequired:
   Enabled: true
-  Description: "Requires a `type:` option for all outputs."
+  Description: "Requires a `type:` option for all outputs"
 
 Operandi/PreferOptionalOverDefaultNil:
   Enabled: true
-  Description: "Prefers `optional: true` over `default: nil`."
+  Description: "Prefers `optional: true` over `default: nil`"
 
 Operandi/PreferFailMethod:
   Enabled: true
-  Description: "Prefers `fail!` over manual error handling."
+  Description: "Prefers `fail!` over manual error handling"
 
 Operandi/RedundantOptional:
   Enabled: true
-  Description: "Detects redundant `optional: true` when a default value is provided."
+  Description: "Detects redundant `optional: true` when a default value is provided"
+
+Operandi/ReservedMethodName:
+  Enabled: true
+  Description: "Prevents overriding Operandi lifecycle and state instance methods"
+  ServiceBaseClasses:
+    - Operandi::Base
+    - ApplicationService
 
 Operandi/ReservedName:
   Enabled: true
-  Description: "Detects reserved argument and output names."
+  Description: "Detects reserved argument and output names"
+
+Operandi/SectionComments:
+  Enabled: false
+  Description: "Requires `# Arguments`, `# Steps`, and `# Outputs` section comments"
 
 Operandi/StepMethodExists:
   Enabled: true
-  Description: "Ensures step methods exist in Operandi services."
+  Description: "Ensures step methods exist in Operandi services"
   ExcludedSteps: []
